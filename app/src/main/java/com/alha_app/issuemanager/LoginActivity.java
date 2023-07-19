@@ -18,6 +18,10 @@ public class LoginActivity extends AppCompatActivity {
 
         issueManager = (IssueManager) this.getApplication();
 
+        if(issueManager.getToken() != null && issueManager.getOwner() != null && issueManager.getRepo() != null){
+            startActivity(new Intent(getApplication(), MainActivity.class));
+        }
+
         EditText token = findViewById(R.id.token);
         EditText owner = findViewById(R.id.owner);
         EditText repo = findViewById(R.id.repo);

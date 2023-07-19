@@ -26,7 +26,8 @@
             android:layout_weight="0.5"
             android:gravity="center"
             android:text="Open 0"
-            android:textSize="25dp" />
+            android:textSize="25dp"
+            android:background="#afafb0"/>
 
         <TextView
             android:id="@+id/closed"
@@ -52,6 +53,15 @@
             android:id="@+id/closed_issuelist"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="invisible"/>
+
+        <TextView
+            android:id="@+id/nodata_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="データがありません"
+            android:textSize="30dp"
+            android:gravity="center"
             android:visibility="invisible"/>
     </FrameLayout>
 
