@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 issueManager.setIssueTitle(openIssueSet.get(position).get("title"));
                 issueManager.setIssueBody(openIssueSet.get(position).get("body"));
+                issueManager.setIssueNumber(openIssueSet.get(position).get("number"));
                 startActivity(new Intent(getApplication(), EditorActivity.class));
             }
         });
@@ -113,7 +114,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_add) {
-            Toast.makeText(issueManager, "追加", Toast.LENGTH_SHORT).show();
+            issueManager.setIssueTitle(null);
+            issueManager.setIssueBody(null);
+            issueManager.setIssueNumber(null);
+            startActivity(new Intent(getApplication(), EditorActivity.class));
         } else if(item.getItemId() == R.id.action_update){
             new Thread(() -> {
                 int i = getIssues("closed");
@@ -224,26 +228,5 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return 0;
-    }
-
-    public void addIssue(){
-        String urlString = BuildConfig.URL;
-
-        String json = "";
-        JsonNode jsonResult = null;
-        ObjectMapper mapper = new ObjectMapper();
-
-        try {
-            Request request = new Request.Builder()
-                    .url(urlString)
-                    .build();
-            OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-            Response response = okHttpClient.newCall(request).execute();
-            System.out.println(response.code());
-            json = response.body().string();
-            jsonResult = mapper.readTree(json);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
     }
 }
