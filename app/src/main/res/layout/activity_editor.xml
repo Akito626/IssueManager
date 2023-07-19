@@ -7,16 +7,45 @@
     tools:context=".EditorActivity"
     android:orientation="vertical">
 
-    <TextView
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#afafb0">
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:text="保存"
+            android:textColor="@color/black"
+            android:layout_gravity="right"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <EditText
         android:id="@+id/title_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20dp"/>
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
+        android:textSize="30dp"
+        android:background="@drawable/boader"
+        android:layout_margin="10dp"
+        android:gravity="left|top"/>
 
-    <TextView
+    <EditText
         android:id="@+id/body_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20dp"/>
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:textSize="25dp"
+        android:background="@drawable/boader"
+        android:layout_margin="10dp"
+        android:gravity="left|top"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.4"/>
 
 </LinearLayout>
