@@ -26,6 +26,17 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    packagingOptions{
+        exclude 'META-INF/DEPENDENCIES'
+    }
+    buildFeatures {
+        viewBinding = true
+        compose = true
+        buildConfig = true
+    }
+    defaultConfig {
+        buildConfigField "String", "URL", "\"${project.property("URL")}\""
+    }
 }
 
 dependencies {
@@ -36,4 +47,23 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.15.2'
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.15.2'
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.15.2'
+
+    // OAuth1.0a
+    implementation 'se.akerfeldt:okhttp-signpost:1.1.0'
+    implementation('oauth.signpost:signpost-core:2.1.1')
+    implementation('oauth.signpost:signpost-commonshttp4:2.1.1')
+
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
+
+    // OkHttp3
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
 }
