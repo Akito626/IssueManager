@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 issueManager.setIssueTitle(closedIssueSet.get(position).get("title"));
                 issueManager.setIssueBody(closedIssueSet.get(position).get("body"));
+                issueManager.setIssueNumber(closedIssueSet.get(position).get("number"));
                 startActivity(new Intent(getApplication(), EditorActivity.class));
             }
         });
@@ -158,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
                     .build();
             OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
             Response response = okHttpClient.newCall(request).execute();
-            System.out.println(response.code());
             json = response.body().string();
             jsonResult = mapper.readTree(json);
             if(jsonResult.size() == 0){
@@ -193,7 +193,6 @@ public class MainActivity extends AppCompatActivity {
                 item.put("name", tmp);
                 issueData.put("name", tmp);
 
-                System.out.println(jsonResult.get(i).get("labels").size());
                 if(jsonResult.get(i).get("labels").size() == 0){
                     item.put("label", "default");
                     issueData.put("label", "default");
@@ -212,8 +211,6 @@ public class MainActivity extends AppCompatActivity {
                 issueData.put("date", tmp);
 
                 tmp = jsonResult.get(i).get("number").toString();
-                tmp = tmp.substring(1, tmp.length()-1);
-                tmp.replaceAll(",", "");
                 issueData.put("number", tmp);
 
                 listData.add(item);

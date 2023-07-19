@@ -29,7 +29,7 @@
         android:layout_height="0dp"
         android:layout_weight="0.05"
         android:autoSizeTextType="uniform"
-        android:text="Title"
+        android:text="タイトル"
         android:textColor="@color/black"
         android:layout_margin="10dp"/>
 

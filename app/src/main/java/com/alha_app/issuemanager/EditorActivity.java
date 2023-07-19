@@ -25,9 +25,13 @@ import okhttp3.Response;
 
 public class EditorActivity extends AppCompatActivity {
     private IssueManager issueManager;
+    private String token;
+    private String owner;
+    private String repo;
 
     private EditText titleText;
     private EditText bodyText;
+    private String issueNumber;
 
     private Handler handler;
     @Override
@@ -35,13 +39,18 @@ public class EditorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
 
+        issueManager = (IssueManager) this.getApplication();
+        token = issueManager.getToken();
+        owner = issueManager.getOwner();
+        repo = issueManager.getRepo();
+        issueNumber = issueManager.getIssueNumber();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         handler = new Handler();
-        issueManager = (IssueManager) this.getApplication();
 
         titleText = findViewById(R.id.title_text);
         titleText.setText(issueManager.getIssueTitle());
@@ -51,9 +60,12 @@ public class EditorActivity extends AppCompatActivity {
 
         Button saveButton = findViewById(R.id.save_button);
         saveButton.setOnClickListener(view -> {
-            Toast.makeText(issueManager, "保存しました", Toast.LENGTH_SHORT).show();
             new Thread(() -> {
-                addIssue();
+                if(issueNumber == null){
+                    addIssue();
+                } else {
+                    updateIssue();
+                }
             }).start();
         });
     }
@@ -77,8 +89,65 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     public void addIssue(){
-        String urlString = BuildConfig.URL;
-        String token = "";
+        String urlString = BuildConfig.URL + owner + "/" + repo + "/issues";
+        String json = "";
+        JsonNode jsonResult = null;
+        ObjectMapper mapper = new ObjectMapper();
+
+        if(titleText.getText().toString().equals("")){
+            Toast.makeText(issueManager, "タイトルを入力してください", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Map<String, String> formParamMap = new HashMap<>();
+        formParamMap.put("title", titleText.getText().toString());
+        formParamMap.put("body", bodyText.getText().toString());
+        System.out.println(bodyText.getText().toString());
+        //formParamMap.put("labels", "");
+
+        final FormBody.Builder formBuilder = new FormBody.Builder();
+        formParamMap.forEach(formBuilder::add);
+        RequestBody requestBody = formBuilder.build();
+
+        try {
+            Request request = new Request.Builder()
+                    .url(urlString)
+                    .addHeader("Authorization", "token " + token)
+                    .post(requestBody)
+                    .build();
+
+            OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+            Response response = okHttpClient.newCall(request).execute();
+
+            json = response.body().string();
+            //jsonResult = mapper.readTree(json);
+            System.out.println(response.code());
+            System.out.println(json);
+
+            if(response.code() == 401){
+                handler.post(() -> {
+                    Toast.makeText(issueManager, "不正なtokenです", Toast.LENGTH_SHORT).show();
+                });
+                return;
+            }
+
+            if(!response.isSuccessful()){
+                handler.post(() -> {
+                    Toast.makeText(issueManager, "追加できませんでした", Toast.LENGTH_SHORT).show();
+                });
+                return;
+            }
+
+            handler.post(() -> {
+                Toast.makeText(issueManager, "保存しました", Toast.LENGTH_SHORT).show();
+            });
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void updateIssue(){
+        String urlString = BuildConfig.URL + owner + "/" + repo + "/issues/" + issueNumber;
 
         String json = "";
         JsonNode jsonResult = null;
@@ -96,9 +165,8 @@ public class EditorActivity extends AppCompatActivity {
         try {
             Request request = new Request.Builder()
                     .url(urlString)
-                    .addHeader("Accept", "application/vnd.github+json")
-                    .addHeader("Authorization", token)
-                    .post(requestBody)
+                    .addHeader("Authorization", "token " + token)
+                    .patch(requestBody)
                     .build();
 
             OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
@@ -109,35 +177,23 @@ public class EditorActivity extends AppCompatActivity {
             System.out.println(response.code());
             System.out.println(json);
 
+            if(response.code() == 401){
+                handler.post(() -> {
+                    Toast.makeText(issueManager, "不正なtokenです", Toast.LENGTH_SHORT).show();
+                });
+                return;
+            }
+
             if(!response.isSuccessful()){
                 handler.post(() -> {
                     Toast.makeText(issueManager, "追加できませんでした", Toast.LENGTH_SHORT).show();
                 });
+                return;
             }
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 
-    public void updateIssue(){
-        String urlString = BuildConfig.URL;
-
-        String json = "";
-        JsonNode jsonResult = null;
-        ObjectMapper mapper = new ObjectMapper();
-
-        Map<String, String> formParamMap = new HashMap<>();
-        //formParamMap.put("title", );
-
-        try {
-            Request request = new Request.Builder()
-                    .url(urlString)
-                    .build();
-            OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-            Response response = okHttpClient.newCall(request).execute();
-            System.out.println(response.code());
-            json = response.body().string();
-            jsonResult = mapper.readTree(json);
+            handler.post(() -> {
+                Toast.makeText(issueManager, "保存しました", Toast.LENGTH_SHORT).show();
+            });
         } catch (Exception e){
             e.printStackTrace();
         }
