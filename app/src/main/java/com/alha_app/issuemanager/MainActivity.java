@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -42,14 +43,16 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     private IssueManager issueManager;
+    private String owner;
+    private String repo;
     private ListView openIssueList;
     private ListView closedIssueList;
     private ArrayList<Map<String, String>> openIssueSet;
     private ArrayList<Map<String, String>> closedIssueSet;
     private Handler handler;
 
-    TextView openText;
-    TextView closedText;
+    private TextView openText;
+    private TextView closedText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         issueManager = (IssueManager) this.getApplication();
+        owner = issueManager.getOwner();
+        repo = issueManager.getRepo();
 
         openIssueList = findViewById(R.id.open_issuelist);
         closedIssueList = findViewById(R.id.closed_issuelist);
@@ -90,11 +95,15 @@ public class MainActivity extends AppCompatActivity {
         openText.setOnClickListener(v -> {
             closedIssueList.setVisibility(View.INVISIBLE);
             openIssueList.setVisibility(View.VISIBLE);
+            openText.setBackgroundColor(Color.parseColor("#afafb0"));
+            closedText.setBackgroundColor(Color.parseColor("#00000000"));
         });
         closedText = findViewById(R.id.closed);
         closedText.setOnClickListener(v -> {
             openIssueList.setVisibility(View.INVISIBLE);
             closedIssueList.setVisibility(View.VISIBLE);
+            closedText.setBackgroundColor(Color.parseColor("#afafb0"));
+            openText.setBackgroundColor(Color.parseColor("#00000000"));
         });
 
         new Thread(() -> {
@@ -119,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
             issueManager.setIssueNumber(null);
             startActivity(new Intent(getApplication(), EditorActivity.class));
         } else if(item.getItemId() == R.id.action_update){
+            TextView textView = findViewById(R.id.nodata_text);
+            textView.setVisibility(View.INVISIBLE);
             new Thread(() -> {
                 int i = getIssues("closed");
                 closedText.setText("Closed " + i);
@@ -135,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public int getIssues(String s){
-        String urlString = BuildConfig.URL + "?state=" + s;
+        String urlString = BuildConfig.URL + owner + "/" + repo + "/issues" + "?state=" + s;
 
         String json = "";
         JsonNode jsonResult = null;
@@ -150,6 +161,13 @@ public class MainActivity extends AppCompatActivity {
             System.out.println(response.code());
             json = response.body().string();
             jsonResult = mapper.readTree(json);
+            if(jsonResult.size() == 0){
+                handler.post(() -> {
+                   TextView textView = findViewById(R.id.nodata_text);
+                   textView.setVisibility(View.VISIBLE);
+                });
+                return 0;
+            }
 
             ArrayList<Map<String, String>> listData = new ArrayList<>();
             String tmp = "";
@@ -230,6 +248,13 @@ public class MainActivity extends AppCompatActivity {
             }
             return jsonResult.size();
         } catch (Exception e){
+            if(jsonResult.size() == 0){
+                handler.post(() -> {
+                    TextView textView = findViewById(R.id.nodata_text);
+                    textView.setVisibility(View.VISIBLE);
+                });
+                return 0;
+            }
             e.printStackTrace();
         }
         return 0;
