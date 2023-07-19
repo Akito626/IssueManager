@@ -31,6 +31,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 
@@ -43,10 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private IssueManager issueManager;
     private ListView openIssueList;
     private ListView closedIssueList;
-    private ArrayList<String> openIssueTitle;
-    private ArrayList<String> openIssueBodies;
-    private ArrayList<String> closedIssueTitle;
-    private ArrayList<String> closedIssueBodies;
+    private ArrayList<Map<String, String>> openIssueSet;
+    private ArrayList<Map<String, String>> closedIssueSet;
     private Handler handler;
 
     TextView openText;
@@ -66,24 +65,22 @@ public class MainActivity extends AppCompatActivity {
         closedIssueList = findViewById(R.id.closed_issuelist);
         handler = new Handler();
 
-        openIssueTitle = new ArrayList<>();
-        openIssueBodies = new ArrayList<>();
-        closedIssueTitle = new ArrayList<>();
-        closedIssueBodies = new ArrayList<>();
+        openIssueSet = new ArrayList<>();
+        closedIssueSet = new ArrayList<>();
 
         openIssueList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                issueManager.setIssueTitle(openIssueTitle.get(position));
-                issueManager.setIssueBody(openIssueBodies.get(position));
+                issueManager.setIssueTitle(openIssueSet.get(position).get("title"));
+                issueManager.setIssueBody(openIssueSet.get(position).get("body"));
                 startActivity(new Intent(getApplication(), EditorActivity.class));
             }
         });
         closedIssueList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                issueManager.setIssueTitle(closedIssueTitle.get(position));
-                issueManager.setIssueBody(closedIssueBodies.get(position));
+                issueManager.setIssueTitle(closedIssueSet.get(position).get("title"));
+                issueManager.setIssueBody(closedIssueSet.get(position).get("body"));
                 startActivity(new Intent(getApplication(), EditorActivity.class));
             }
         });
@@ -132,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
         String urlString = BuildConfig.URL + "?state=" + s;
 
         String json = "";
-        StringBuilder sb = new StringBuilder();
         JsonNode jsonResult = null;
         ObjectMapper mapper = new ObjectMapper();
 
@@ -146,45 +142,39 @@ public class MainActivity extends AppCompatActivity {
             json = response.body().string();
             jsonResult = mapper.readTree(json);
 
-            System.out.println(json);
-
             ArrayList<Map<String, String>> listData = new ArrayList<>();
             String tmp = "";
             for(int i = 0; i < jsonResult.size(); i++){
                 Map<String, String> item = new HashMap<>();
+                Map<String, String> issueData = new HashMap<>();
 
                 tmp = jsonResult.get(i).get("title").toString();
                 tmp = tmp.substring(1, tmp.length()-1);
                 tmp = tmp.replaceAll("\\\\r", "");
                 tmp = tmp.replaceAll("\\\\n", "\n");
-                if(s.equals("open")){
-                    openIssueTitle.add(tmp);
-                } else if(s.equals("closed")){
-                    closedIssueTitle.add(tmp);
-                }
-
                 item.put("title", tmp);
+                issueData.put("title", tmp);
+
                 tmp = jsonResult.get(i).get("body").toString();
                 tmp = tmp.substring(1, tmp.length()-1);
                 tmp = tmp.replaceAll("\\\\r", "");
                 tmp = tmp.replaceAll("\\\\n", "\n");
-                if(s.equals("open")){
-                    openIssueBodies.add(tmp);
-                } else if(s.equals("closed")){
-                    closedIssueBodies.add(tmp);
-                }
+                issueData.put("body", tmp);
 
                 tmp = jsonResult.get(i).get("user").get("login").toString();
                 tmp = tmp.substring(1, tmp.length()-1);
                 item.put("name", tmp);
+                issueData.put("name", tmp);
 
                 System.out.println(jsonResult.get(i).get("labels").size());
                 if(jsonResult.get(i).get("labels").size() == 0){
                     item.put("label", "default");
+                    issueData.put("label", "default");
                 } else {
                     tmp = jsonResult.get(i).get("labels").get(0).get("name").toString();
                     tmp = tmp.substring(1, tmp.length() - 1);
                     item.put("label", tmp);
+                    issueData.put("label", tmp);
                 }
 
                 tmp = jsonResult.get(i).get("created_at").toString();
@@ -192,7 +182,20 @@ public class MainActivity extends AppCompatActivity {
                 tmp = tmp.replace("T", " ");
                 tmp = tmp.replace("Z", "");
                 item.put("date", tmp);
+                issueData.put("date", tmp);
+
+                tmp = jsonResult.get(i).get("number").toString();
+                tmp = tmp.substring(1, tmp.length()-1);
+                tmp.replaceAll(",", "");
+                issueData.put("number", tmp);
+
                 listData.add(item);
+
+                if(s.equals("open")){
+                    openIssueSet.add(issueData);
+                } else if(s.equals("closed")){
+                    closedIssueSet.add(issueData);
+                }
             }
 
             if(s.equals("open")) {
@@ -221,5 +224,26 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public void addIssue(){
+        String urlString = BuildConfig.URL;
+
+        String json = "";
+        JsonNode jsonResult = null;
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            Request request = new Request.Builder()
+                    .url(urlString)
+                    .build();
+            OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+            Response response = okHttpClient.newCall(request).execute();
+            System.out.println(response.code());
+            json = response.body().string();
+            jsonResult = mapper.readTree(json);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
