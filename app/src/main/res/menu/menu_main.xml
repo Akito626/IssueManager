@@ -13,4 +13,9 @@
         android:title="更新"
         android:icon="@drawable/ic_change_circle"
         app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_logout"
+        android:title="ログアウト"
+        app:showAsAction="never"/>
 </menu>

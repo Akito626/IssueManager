@@ -125,6 +125,11 @@ public class MainActivity extends AppCompatActivity {
                 i = getIssues("open");
                 openText.setText("Open " + i);
             }).start();
+        } else if(item.getItemId() == R.id.action_logout){
+            issueManager.setToken(null);
+            issueManager.setOwner(null);
+            issueManager.setRepo(null);
+            finish();
         }
         return true;
     }
