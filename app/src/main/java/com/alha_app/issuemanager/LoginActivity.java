@@ -32,9 +32,9 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(issueManager, "全て入力してください", Toast.LENGTH_SHORT).show();
                 return;
             }
-            issueManager.setToken(token.getText().toString());
-            issueManager.setOwner(owner.getText().toString());
-            issueManager.setRepo(repo.getText().toString());
+            issueManager.setToken(token.getText().toString().trim());
+            issueManager.setOwner(owner.getText().toString().trim());
+            issueManager.setRepo(repo.getText().toString().trim());
             startActivity(new Intent(getApplication(), MainActivity.class));
         });
     }
