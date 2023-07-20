@@ -179,7 +179,7 @@ public class EditorActivity extends AppCompatActivity {
             if(!response.isSuccessful()){
                 String s = json;
                 handler.post(() -> {
-                    Toast.makeText(issueManager, response.code() + s, Toast.LENGTH_LONG).show();
+                    Toast.makeText(issueManager, "通信に失敗しました", Toast.LENGTH_LONG).show();
                 });
                 return;
             }
@@ -192,6 +192,7 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
+    // v4.35.0以降のみ対応
     public void updateIssue(){
         String urlString = BuildConfig.URL + owner + "/" + repo + "/issues/" + issueNumber;
 
@@ -200,15 +201,6 @@ public class EditorActivity extends AppCompatActivity {
         String json = "";
         JsonNode jsonResult = null;
         ObjectMapper mapper = new ObjectMapper();
-
-//        Map<String, String> formParamMap = new HashMap<>();
-//        formParamMap.put("title", titleText.getText().toString());
-//        formParamMap.put("body", bodyText.getText().toString());
-//        //formParamMap.put("labels", "");
-//
-//        final FormBody.Builder formBuilder = new FormBody.Builder();
-//        formParamMap.forEach(formBuilder::add);
-//        RequestBody requestBody = formBuilder.build();
 
         final okhttp3.MediaType mediaTypeJson = okhttp3.MediaType.parse("application/json; charset=UTF-8");
 
@@ -246,7 +238,7 @@ public class EditorActivity extends AppCompatActivity {
             if(!response.isSuccessful()){
                 String s = json;
                 handler.post(() -> {
-                    Toast.makeText(issueManager, response.code() + s, Toast.LENGTH_LONG).show();
+                    Toast.makeText(issueManager, "GitBucketのバージョンが古い可能性があります(v4.30.0未満)", Toast.LENGTH_LONG).show();
                 });
                 return;
             }
