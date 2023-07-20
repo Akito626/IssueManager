@@ -43,6 +43,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     private IssueManager issueManager;
+    private String token;
     private String owner;
     private String repo;
     private ListView openIssueList;
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         issueManager = (IssueManager) this.getApplication();
+        token = issueManager.getToken();
         owner = issueManager.getOwner();
         repo = issueManager.getRepo();
 
@@ -128,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
             issueManager.setIssueBody(null);
             issueManager.setIssueNumber(null);
             startActivity(new Intent(getApplication(), EditorActivity.class));
-        } else if(item.getItemId() == R.id.action_update){
+        } else if (item.getItemId() == R.id.action_update) {
             TextView textView = findViewById(R.id.nodata_text);
             textView.setVisibility(View.INVISIBLE);
             new Thread(() -> {
@@ -137,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 i = getIssues("open");
                 openText.setText("Open " + i);
             }).start();
-        } else if(item.getItemId() == R.id.action_logout){
+        } else if (item.getItemId() == R.id.action_logout) {
             issueManager.setToken(null);
             issueManager.setOwner(null);
             issueManager.setRepo(null);
@@ -146,54 +148,57 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public int getIssues(String s){
+    public int getIssues(String s) {
         String urlString = BuildConfig.URL + owner + "/" + repo + "/issues" + "?state=" + s;
 
         String json = "";
         JsonNode jsonResult = null;
         ObjectMapper mapper = new ObjectMapper();
 
-        try{
+        try {
             Request request = new Request.Builder()
+                    .addHeader("Accept", "application/vnd.github+json")
+                    .addHeader("Authorization", "token " + token)
+                    .addHeader("X-GitHub-Api-Version", "2022-11-28")
                     .url(urlString)
                     .build();
             OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
             Response response = okHttpClient.newCall(request).execute();
             json = response.body().string();
             jsonResult = mapper.readTree(json);
-            if(jsonResult.size() == 0){
+            if (jsonResult.size() == 0) {
                 handler.post(() -> {
-                   TextView textView = findViewById(R.id.nodata_text);
-                   textView.setVisibility(View.VISIBLE);
+                    TextView textView = findViewById(R.id.nodata_text);
+                    textView.setVisibility(View.VISIBLE);
                 });
                 return 0;
             }
 
             ArrayList<Map<String, String>> listData = new ArrayList<>();
             String tmp = "";
-            for(int i = 0; i < jsonResult.size(); i++){
+            for (int i = 0; i < jsonResult.size(); i++) {
                 Map<String, String> item = new HashMap<>();
                 Map<String, String> issueData = new HashMap<>();
 
                 tmp = jsonResult.get(i).get("title").toString();
-                tmp = tmp.substring(1, tmp.length()-1);
+                tmp = tmp.substring(1, tmp.length() - 1);
                 tmp = tmp.replaceAll("\\\\r", "");
                 tmp = tmp.replaceAll("\\\\n", "\n");
                 item.put("title", tmp);
                 issueData.put("title", tmp);
 
                 tmp = jsonResult.get(i).get("body").toString();
-                tmp = tmp.substring(1, tmp.length()-1);
+                tmp = tmp.substring(1, tmp.length() - 1);
                 tmp = tmp.replaceAll("\\\\r", "");
                 tmp = tmp.replaceAll("\\\\n", "\n");
                 issueData.put("body", tmp);
 
                 tmp = jsonResult.get(i).get("user").get("login").toString();
-                tmp = tmp.substring(1, tmp.length()-1);
+                tmp = tmp.substring(1, tmp.length() - 1);
                 item.put("name", tmp);
                 issueData.put("name", tmp);
 
-                if(jsonResult.get(i).get("labels").size() == 0){
+                if (jsonResult.get(i).get("labels").size() == 0) {
                     item.put("label", "default");
                     issueData.put("label", "default");
                 } else {
@@ -204,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 tmp = jsonResult.get(i).get("created_at").toString();
-                tmp = tmp.substring(1, tmp.length()-1);
+                tmp = tmp.substring(1, tmp.length() - 1);
                 tmp = tmp.replace("T", " ");
                 tmp = tmp.replace("Z", "");
                 item.put("date", tmp);
@@ -215,14 +220,14 @@ public class MainActivity extends AppCompatActivity {
 
                 listData.add(item);
 
-                if(s.equals("open")){
+                if (s.equals("open")) {
                     openIssueSet.add(issueData);
-                } else if(s.equals("closed")){
+                } else if (s.equals("closed")) {
                     closedIssueSet.add(issueData);
                 }
             }
 
-            if(s.equals("open")) {
+            if (s.equals("open")) {
                 handler.post(() -> {
                     openIssueList.setAdapter(new SimpleAdapter(
                             this,
@@ -232,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                             new int[]{R.id.title, R.id.date, R.id.label, R.id.name}
                     ));
                 });
-            } else if(s.equals("closed")){
+            } else if (s.equals("closed")) {
                 handler.post(() -> {
                     closedIssueList.setAdapter(new SimpleAdapter(
                             this,
@@ -244,14 +249,11 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
             return jsonResult.size();
-        } catch (Exception e){
-            if(jsonResult.size() == 0){
-                handler.post(() -> {
-                    TextView textView = findViewById(R.id.nodata_text);
-                    textView.setVisibility(View.VISIBLE);
-                });
-                return 0;
-            }
+        } catch (Exception e) {
+            handler.post(() -> {
+                TextView textView = findViewById(R.id.nodata_text);
+                textView.setVisibility(View.VISIBLE);
+            });
             e.printStackTrace();
         }
         return 0;

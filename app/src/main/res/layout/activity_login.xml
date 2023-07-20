@@ -4,81 +4,93 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".LoginActivity"
-    android:orientation="vertical">
+    android:background="#afafb0">
 
     <Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.3"/>
+        android:layout_weight="0.1" />
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.3"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:orientation="vertical">
+        android:layout_weight="0.1"
+        android:background="#afafb0">
 
         <EditText
             android:id="@+id/token"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:inputType="text"
+            android:layout_height="40dp"
+            android:layout_margin="30dp"
             android:autoSizeTextType="uniform"
-            android:layout_margin="5dp"
-            android:background="#00000000"
-            android:hint="token"/>
+            android:background="@color/white"
+            android:hint="token"
+            android:inputType="text"
+            android:layout_gravity="center_vertical" />
+    </FrameLayout>
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.05"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:background="#afafb0">
 
         <EditText
             android:id="@+id/owner"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:inputType="text"
+            android:layout_height="40dp"
+            android:layout_margin="30dp"
             android:autoSizeTextType="uniform"
-            android:layout_margin="5dp"
-            android:background="#00000000"
-            android:hint="owner"/>
+            android:background="@color/white"
+            android:hint="owner"
+            android:inputType="text"
+            android:layout_gravity="center_vertical"/>
+    </FrameLayout>
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.05"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:background="#afafb0">
 
         <EditText
             android:id="@+id/repo"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:inputType="text"
+            android:layout_height="40dp"
+            android:layout_margin="30dp"
             android:autoSizeTextType="uniform"
-            android:layout_margin="5dp"
-            android:background="#00000000"
-            android:hint="リポジトリー"/>
+            android:background="@color/white"
+            android:hint="リポジトリー"
+            android:inputType="text"
+            android:layout_gravity="center_vertical"/>
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.1"/>
-
-        <Button
-            android:id="@+id/login_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:autoSizeTextType="uniform"
-            android:textSize="20dp"
-            android:text="Login"
-            android:layout_gravity="center"
-            android:backgroundTint="#afafb0"/>
-    </LinearLayout>
+            android:layout_weight="0.1" />
+    </FrameLayout>
 
     <Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.2"/>
+        android:layout_weight="0.1" />
+
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:autoSizeTextType="uniform"
+        android:backgroundTint="@color/white"
+        android:text="Login"
+        android:textColor="@color/black"
+        android:textSize="20dp" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.4" />
 
 </LinearLayout>

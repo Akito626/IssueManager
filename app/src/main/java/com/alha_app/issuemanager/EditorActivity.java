@@ -14,10 +14,12 @@ import android.widget.Toast;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.FormBody;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -94,6 +96,8 @@ public class EditorActivity extends AppCompatActivity {
         JsonNode jsonResult = null;
         ObjectMapper mapper = new ObjectMapper();
 
+        System.out.println(urlString);
+
         if(titleText.getText().toString().equals("")){
             Toast.makeText(issueManager, "タイトルを入力してください", Toast.LENGTH_SHORT).show();
             return;
@@ -112,11 +116,14 @@ public class EditorActivity extends AppCompatActivity {
         try {
             Request request = new Request.Builder()
                     .url(urlString)
+                    .addHeader("Accept", "application/vnd.github+json")
                     .addHeader("Authorization", "token " + token)
+                    .addHeader("X-GitHub-Api-Version", "2022-11-28")
                     .post(requestBody)
                     .build();
 
-            OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+            OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                    .build();
             Response response = okHttpClient.newCall(request).execute();
 
             json = response.body().string();
@@ -133,7 +140,7 @@ public class EditorActivity extends AppCompatActivity {
 
             if(!response.isSuccessful()){
                 handler.post(() -> {
-                    Toast.makeText(issueManager, "追加できませんでした", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(issueManager, "通信に失敗しました", Toast.LENGTH_SHORT).show();
                 });
                 return;
             }
@@ -148,6 +155,10 @@ public class EditorActivity extends AppCompatActivity {
 
     public void updateIssue(){
         String urlString = BuildConfig.URL + owner + "/" + repo + "/issues/" + issueNumber;
+
+        int i = Integer.parseInt(issueNumber);
+        System.out.println(i);
+        System.out.println(urlString);
 
         String json = "";
         JsonNode jsonResult = null;
@@ -165,7 +176,9 @@ public class EditorActivity extends AppCompatActivity {
         try {
             Request request = new Request.Builder()
                     .url(urlString)
+                    .addHeader("Accept", "application/vnd.github+json")
                     .addHeader("Authorization", "token " + token)
+                    .addHeader("X-GitHub-Api-Version", "2022-11-28")
                     .patch(requestBody)
                     .build();
 
@@ -186,7 +199,7 @@ public class EditorActivity extends AppCompatActivity {
 
             if(!response.isSuccessful()){
                 handler.post(() -> {
-                    Toast.makeText(issueManager, "追加できませんでした", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(issueManager, "通信に失敗しました", Toast.LENGTH_SHORT).show();
                 });
                 return;
             }
