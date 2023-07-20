@@ -11,6 +11,8 @@ public class IssueManager extends Application {
     String issueBody;
 
     String issueNumber;
+    String issueLabel;
+    String issuePriority;
 
     @Override
     public void onCreate(){
@@ -47,6 +49,12 @@ public class IssueManager extends Application {
     public String getIssueNumber() {
         return issueNumber;
     }
+    public String getIssueLabel() {
+        return issueLabel;
+    }
+    public String getIssuePriority() {
+        return issuePriority;
+    }
 
     public void setToken(String token) {
         SharedPreferences preferences = getSharedPreferences("prefData", MODE_PRIVATE);
@@ -77,5 +85,11 @@ public class IssueManager extends Application {
     }
     public void setIssueNumber(String issueNumber) {
         this.issueNumber = issueNumber;
+    }
+    public void setIssueLabel(String issueLabel) {
+        this.issueLabel = issueLabel;
+    }
+    public void setIssuePriority(String issuePriority) {
+        this.issuePriority = issuePriority;
     }
 }
