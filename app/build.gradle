@@ -36,8 +36,6 @@ android {
     }
     defaultConfig {
         buildConfigField "String", "URL", "\"${project.property("URL")}\""
-        buildConfigField "String", "OWNER", "\"${project.property("OWNER")}\""
-        buildConfigField "String", "REPO", "\"${project.property("REPO")}\""
     }
 }
 

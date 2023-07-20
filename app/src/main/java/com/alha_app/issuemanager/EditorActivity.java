@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alha_app.issuemanager.model.IssueJson;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -136,24 +137,21 @@ public class EditorActivity extends AppCompatActivity {
         JsonNode jsonResult = null;
         ObjectMapper mapper = new ObjectMapper();
 
-        System.out.println(urlString);
-
         if(titleText.getText().toString().equals("")){
             Toast.makeText(issueManager, "タイトルを入力してください", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Map<String, String> formParamMap = new HashMap<>();
-        formParamMap.put("title", titleText.getText().toString());
-        formParamMap.put("body", bodyText.getText().toString());
-        System.out.println(bodyText.getText().toString());
-        //formParamMap.put("labels", "");
-
-        final FormBody.Builder formBuilder = new FormBody.Builder();
-        formParamMap.forEach(formBuilder::add);
-        RequestBody requestBody = formBuilder.build();
+        final okhttp3.MediaType mediaTypeJson = okhttp3.MediaType.parse("application/json; charset=UTF-8");
 
         try {
+            IssueJson issue = new IssueJson();
+            issue.setTitle(titleText.getText().toString());
+            issue.setBody(bodyText.getText().toString());
+            json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(issue);
+            final RequestBody requestBody = RequestBody.create(json, mediaTypeJson);
+            System.out.println(json);
+
             Request request = new Request.Builder()
                     .url(urlString)
                     .addHeader("Accept", "application/vnd.github+json")
@@ -197,24 +195,31 @@ public class EditorActivity extends AppCompatActivity {
     public void updateIssue(){
         String urlString = BuildConfig.URL + owner + "/" + repo + "/issues/" + issueNumber;
 
-        int i = Integer.parseInt(issueNumber);
-        System.out.println(i);
         System.out.println(urlString);
 
         String json = "";
         JsonNode jsonResult = null;
         ObjectMapper mapper = new ObjectMapper();
 
-        Map<String, String> formParamMap = new HashMap<>();
-        formParamMap.put("title", titleText.getText().toString());
-        formParamMap.put("body", bodyText.getText().toString());
-        //formParamMap.put("labels", "");
+//        Map<String, String> formParamMap = new HashMap<>();
+//        formParamMap.put("title", titleText.getText().toString());
+//        formParamMap.put("body", bodyText.getText().toString());
+//        //formParamMap.put("labels", "");
+//
+//        final FormBody.Builder formBuilder = new FormBody.Builder();
+//        formParamMap.forEach(formBuilder::add);
+//        RequestBody requestBody = formBuilder.build();
 
-        final FormBody.Builder formBuilder = new FormBody.Builder();
-        formParamMap.forEach(formBuilder::add);
-        RequestBody requestBody = formBuilder.build();
+        final okhttp3.MediaType mediaTypeJson = okhttp3.MediaType.parse("application/json; charset=UTF-8");
 
         try {
+            IssueJson issue = new IssueJson();
+            issue.setTitle(titleText.getText().toString());
+            issue.setBody(bodyText.getText().toString());
+            json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(issue);
+            final RequestBody requestBody = RequestBody.create(json, mediaTypeJson);
+            System.out.println(json);
+
             Request request = new Request.Builder()
                     .url(urlString)
                     .addHeader("Accept", "application/vnd.github+json")
