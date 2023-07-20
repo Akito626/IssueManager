@@ -107,7 +107,7 @@ public class EditorActivity extends AppCompatActivity {
                 if(issueNumber == null){
                     addIssue();
                 } else {
-                    updateIssue();
+                    //updateIssue();
                 }
             }).start();
         });
@@ -192,62 +192,62 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
-    // v4.35.0以降のみ対応
-    public void updateIssue(){
-        String urlString = BuildConfig.URL + owner + "/" + repo + "/issues/" + issueNumber;
-
-        System.out.println(urlString);
-
-        String json = "";
-        JsonNode jsonResult = null;
-        ObjectMapper mapper = new ObjectMapper();
-
-        final okhttp3.MediaType mediaTypeJson = okhttp3.MediaType.parse("application/json; charset=UTF-8");
-
-        try {
-            IssueJson issue = new IssueJson();
-            issue.setTitle(titleText.getText().toString());
-            issue.setBody(bodyText.getText().toString());
-            json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(issue);
-            final RequestBody requestBody = RequestBody.create(json, mediaTypeJson);
-            System.out.println(json);
-
-            Request request = new Request.Builder()
-                    .url(urlString)
-                    .addHeader("Accept", "application/vnd.github+json")
-                    .addHeader("Authorization", "token " + token)
-                    .addHeader("X-GitHub-Api-Version", "2022-11-28")
-                    .patch(requestBody)
-                    .build();
-
-            OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-            Response response = okHttpClient.newCall(request).execute();
-
-            json = response.body().string();
-            //jsonResult = mapper.readTree(json);
-            System.out.println(response.code());
-            System.out.println(json);
-
-            if(response.code() == 401){
-                handler.post(() -> {
-                    Toast.makeText(issueManager, "不正なtokenです", Toast.LENGTH_SHORT).show();
-                });
-                return;
-            }
-
-            if(!response.isSuccessful()){
-                String s = json;
-                handler.post(() -> {
-                    Toast.makeText(issueManager, "GitBucketのバージョンが古い可能性があります(v4.30.0未満)", Toast.LENGTH_LONG).show();
-                });
-                return;
-            }
-
-            handler.post(() -> {
-                Toast.makeText(issueManager, "保存しました", Toast.LENGTH_SHORT).show();
-            });
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
+//    // v4.35.0以降のみ対応
+//    public void updateIssue(){
+//        String urlString = BuildConfig.URL + owner + "/" + repo + "/issues/" + issueNumber;
+//
+//        System.out.println(urlString);
+//
+//        String json = "";
+//        JsonNode jsonResult = null;
+//        ObjectMapper mapper = new ObjectMapper();
+//
+//        final okhttp3.MediaType mediaTypeJson = okhttp3.MediaType.parse("application/json; charset=UTF-8");
+//
+//        try {
+//            IssueJson issue = new IssueJson();
+//            issue.setTitle(titleText.getText().toString());
+//            issue.setBody(bodyText.getText().toString());
+//            json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(issue);
+//            final RequestBody requestBody = RequestBody.create(json, mediaTypeJson);
+//            System.out.println(json);
+//
+//            Request request = new Request.Builder()
+//                    .url(urlString)
+//                    .addHeader("Accept", "application/vnd.github+json")
+//                    .addHeader("Authorization", "token " + token)
+//                    .addHeader("X-GitHub-Api-Version", "2022-11-28")
+//                    .patch(requestBody)
+//                    .build();
+//
+//            OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+//            Response response = okHttpClient.newCall(request).execute();
+//
+//            json = response.body().string();
+//            //jsonResult = mapper.readTree(json);
+//            System.out.println(response.code());
+//            System.out.println(json);
+//
+//            if(response.code() == 401){
+//                handler.post(() -> {
+//                    Toast.makeText(issueManager, "不正なtokenです", Toast.LENGTH_SHORT).show();
+//                });
+//                return;
+//            }
+//
+//            if(!response.isSuccessful()){
+//                String s = json;
+//                handler.post(() -> {
+//                    Toast.makeText(issueManager, "GitBucketのバージョンが古い可能性があります(v4.30.0未満)", Toast.LENGTH_LONG).show();
+//                });
+//                return;
+//            }
+//
+//            handler.post(() -> {
+//                Toast.makeText(issueManager, "保存しました", Toast.LENGTH_SHORT).show();
+//            });
+//        } catch (Exception e){
+//            e.printStackTrace();
+//        }
+//    }
 }
