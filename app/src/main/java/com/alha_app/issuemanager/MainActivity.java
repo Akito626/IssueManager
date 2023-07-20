@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 issueManager.setIssueTitle(openIssueSet.get(position).get("title"));
                 issueManager.setIssueBody(openIssueSet.get(position).get("body"));
                 issueManager.setIssueNumber(openIssueSet.get(position).get("number"));
+                issueManager.setIssueLabel(openIssueSet.get(position).get("label"));
                 startActivity(new Intent(getApplication(), EditorActivity.class));
             }
         });
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 issueManager.setIssueTitle(closedIssueSet.get(position).get("title"));
                 issueManager.setIssueBody(closedIssueSet.get(position).get("body"));
                 issueManager.setIssueNumber(closedIssueSet.get(position).get("number"));
+                issueManager.setIssueLabel(closedIssueSet.get(position).get("label"));
                 startActivity(new Intent(getApplication(), EditorActivity.class));
             }
         });
@@ -129,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
             issueManager.setIssueTitle(null);
             issueManager.setIssueBody(null);
             issueManager.setIssueNumber(null);
+            issueManager.setIssueLabel(null);
             startActivity(new Intent(getApplication(), EditorActivity.class));
         } else if (item.getItemId() == R.id.action_update) {
             TextView textView = findViewById(R.id.nodata_text);
