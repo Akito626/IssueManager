@@ -2,7 +2,6 @@
     <string name="app_name">IssueManager</string>
 
     <string-array name="labels">
-        <item>default</item>
         <item>bug</item>
         <item>duplicate</item>
         <item>enhancement</item>
