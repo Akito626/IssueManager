@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alha_app.issuemanager.model.CreateIssueDialog;
 import com.alha_app.issuemanager.model.IssueJson;
 import com.alha_app.issuemanager.model.LabelsDialog;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -70,11 +71,10 @@ public class EditorActivity extends AppCompatActivity {
         bodyText = findViewById(R.id.body_text);
         bodyText.setText(issueManager.getIssueBody());
 
-        Button saveButton = findViewById(R.id.save_button);
-        saveButton.setOnClickListener(view -> {
-            new Thread(() -> {
-                addIssue();
-            }).start();
+        Button createButton = findViewById(R.id.create_button);
+        createButton.setOnClickListener(view -> {
+            DialogFragment dialog = new CreateIssueDialog(this);
+            dialog.show(getSupportFragmentManager(), "createDialog");
         });
 
         // labelの編集ボタン
@@ -196,6 +196,10 @@ public class EditorActivity extends AppCompatActivity {
         } else {
             defaultLabel.setVisibility(View.GONE);
         }
+    }
+
+    public void createIssue(){
+        new Thread(() -> addIssue()).start();
     }
 
 //    // 存在しない
