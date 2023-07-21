@@ -97,19 +97,103 @@
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:autoSizeTextType="uniform"
-            android:text=""/>
+            android:text="Comment"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.04"
+        android:layout_weight="0.15"
         android:orientation="horizontal"
         android:layout_margin="10dp">
-    </LinearLayout>
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.11"/>
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/label_default"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="default"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:id="@+id/label_bug"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="bug"
+                    android:textSize="20dp"
+                    android:background="#fc2929"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/label_duplicate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="duplicate"
+                    android:textSize="20dp"
+                    android:background="#cccccc"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/label_enhancement"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="enhancement"
+                    android:textSize="20dp"
+                    android:background="#84b6eb"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/label_invalid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="invalid"
+                    android:textSize="20dp"
+                    android:background="#e6e6e6"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/label_question"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="question"
+                    android:textSize="20dp"
+                    android:background="#cc317c"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/label_wontfix"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="wontfix"
+                    android:textSize="20dp"
+                    android:background="#ffffff"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </ScrollView>
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:fillViewport="true">
+
+        </ScrollView>
+    </LinearLayout>
 </LinearLayout>

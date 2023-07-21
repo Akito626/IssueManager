@@ -135,6 +135,14 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/label_default"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="default"
+                    android:textSize="20dp" />
+
+                <TextView
                     android:id="@+id/label_bug"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

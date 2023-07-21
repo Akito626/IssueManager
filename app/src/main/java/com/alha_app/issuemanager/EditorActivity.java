@@ -173,6 +173,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     public void setLabels(){
+        TextView defaultLabel = findViewById(R.id.label_default);
         TextView[] labels = new TextView[6];
         labels[0] = findViewById(R.id.label_bug);
         labels[1] = findViewById(R.id.label_duplicate);
@@ -181,12 +182,19 @@ public class EditorActivity extends AppCompatActivity {
         labels[4] = findViewById(R.id.label_question);
         labels[5] = findViewById(R.id.label_wontfix);
 
+        boolean isDefault = true;
         for(int i = 0; i < choicesChecked.length; i++){
             if(choicesChecked[i]){
+                isDefault = false;
                 labels[i].setVisibility(View.VISIBLE);
             } else {
                 labels[i].setVisibility(View.GONE);
             }
+        }
+        if(isDefault){
+            defaultLabel.setVisibility(View.VISIBLE);
+        } else {
+            defaultLabel.setVisibility(View.GONE);
         }
     }
 

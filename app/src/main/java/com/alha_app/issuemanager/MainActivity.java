@@ -21,6 +21,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alha_app.issuemanager.model.IssueData;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -48,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private String repo;
     private ListView openIssueList;
     private ListView closedIssueList;
-    private ArrayList<Map<String, String>> openIssueSet;
-    private ArrayList<Map<String, String>> closedIssueSet;
+    private ArrayList<IssueData> openIssueSet;
+    private ArrayList<IssueData> closedIssueSet;
     private Handler handler;
 
     private TextView openText;
@@ -78,20 +79,20 @@ public class MainActivity extends AppCompatActivity {
         openIssueList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                issueManager.setIssueTitle(openIssueSet.get(position).get("title"));
-                issueManager.setIssueBody(openIssueSet.get(position).get("body"));
-                issueManager.setIssueNumber(openIssueSet.get(position).get("number"));
-                issueManager.setIssueLabel(openIssueSet.get(position).get("labels"));
+                issueManager.setIssueTitle(openIssueSet.get(position).getTitle());
+                issueManager.setIssueBody(openIssueSet.get(position).getBody());
+                issueManager.setIssueNumber(openIssueSet.get(position).getNumber());
+                issueManager.setIssueLabel(openIssueSet.get(position).getLabelList());
                 startActivity(new Intent(getApplication(), ViewerActivity.class));
             }
         });
         closedIssueList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                issueManager.setIssueTitle(closedIssueSet.get(position).get("title"));
-                issueManager.setIssueBody(closedIssueSet.get(position).get("body"));
-                issueManager.setIssueNumber(closedIssueSet.get(position).get("number"));
-                issueManager.setIssueLabel(closedIssueSet.get(position).get("labels"));
+                issueManager.setIssueTitle(closedIssueSet.get(position).getTitle());
+                issueManager.setIssueBody(closedIssueSet.get(position).getBody());
+                issueManager.setIssueNumber(closedIssueSet.get(position).getNumber());
+                issueManager.setIssueLabel(closedIssueSet.get(position).getLabelList());
                 startActivity(new Intent(getApplication(), ViewerActivity.class));
             }
         });
@@ -181,37 +182,37 @@ public class MainActivity extends AppCompatActivity {
             String tmp = "";
             for (int i = 0; i < jsonResult.size(); i++) {
                 Map<String, String> item = new HashMap<>();
-                Map<String, String> issueData = new HashMap<>();
+                IssueData issueData = new IssueData();
 
                 tmp = jsonResult.get(i).get("title").toString();
                 tmp = tmp.substring(1, tmp.length() - 1);
                 tmp = tmp.replaceAll("\\\\r", "");
                 tmp = tmp.replaceAll("\\\\n", "\n");
                 item.put("title", tmp);
-                issueData.put("title", tmp);
+                issueData.setTitle(tmp);
 
                 tmp = jsonResult.get(i).get("body").toString();
                 tmp = tmp.substring(1, tmp.length() - 1);
                 tmp = tmp.replaceAll("\\\\r", "");
                 tmp = tmp.replaceAll("\\\\n", "\n");
-                issueData.put("body", tmp);
+                issueData.setBody(tmp);
 
                 tmp = jsonResult.get(i).get("user").get("login").toString();
                 tmp = tmp.substring(1, tmp.length() - 1);
                 item.put("name", tmp);
-                issueData.put("name", tmp);
 
                 if (jsonResult.get(i).get("labels").size() == 0) {
                     item.put("labels", "default");
-                    issueData.put("labels", "default");
+                    issueData.addLabel("default");
                 } else {
                     tmp = jsonResult.get(i).get("labels").get(0).get("name").toString() + "\n";
+                    issueData.addLabel(jsonResult.get(i).get("labels").get(0).get("name").toString().replaceAll("\\\"", ""));
                     for(int j = 1; j < jsonResult.get(i).get("labels").size(); j++) {
                         tmp += jsonResult.get(i).get("labels").get(j).get("name").toString() + "\n";
+                        issueData.addLabel(jsonResult.get(i).get("labels").get(j).get("name").toString().replaceAll("\"", ""));
                     }
                     tmp = tmp.replaceAll("\\\"", "");
                     item.put("labels", tmp);
-                    issueData.put("labels", tmp);
                 }
 
                 tmp = jsonResult.get(i).get("created_at").toString();
@@ -219,10 +220,9 @@ public class MainActivity extends AppCompatActivity {
                 tmp = tmp.replace("T", " ");
                 tmp = tmp.replace("Z", "");
                 item.put("date", tmp);
-                issueData.put("date", tmp);
 
                 tmp = jsonResult.get(i).get("number").toString();
-                issueData.put("number", tmp);
+                issueData.setNumber(tmp);
 
                 listData.add(item);
 
