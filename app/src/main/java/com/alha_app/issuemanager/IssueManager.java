@@ -3,6 +3,8 @@ package com.alha_app.issuemanager;
 import android.app.Application;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
+
 public class IssueManager extends Application {
     String token;
     String owner;
@@ -11,7 +13,7 @@ public class IssueManager extends Application {
     String issueBody;
 
     String issueNumber;
-    String issueLabel;
+    ArrayList<String> issueLabel = new ArrayList<>();
     String issuePriority;
 
     @Override
@@ -49,9 +51,11 @@ public class IssueManager extends Application {
     public String getIssueNumber() {
         return issueNumber;
     }
-    public String getIssueLabel() {
+
+    public ArrayList<String> getIssueLabel() {
         return issueLabel;
     }
+
     public String getIssuePriority() {
         return issuePriority;
     }
@@ -86,9 +90,11 @@ public class IssueManager extends Application {
     public void setIssueNumber(String issueNumber) {
         this.issueNumber = issueNumber;
     }
-    public void setIssueLabel(String issueLabel) {
+
+    public void setIssueLabel(ArrayList<String> issueLabel) {
         this.issueLabel = issueLabel;
     }
+
     public void setIssuePriority(String issuePriority) {
         this.issuePriority = issuePriority;
     }
