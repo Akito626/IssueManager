@@ -11,8 +11,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#afafb0">
-    </androidx.appcompat.widget.Toolbar>
+        android:background="#afafb0"></androidx.appcompat.widget.Toolbar>
 
     <TextView
         android:layout_width="match_parent"
@@ -71,15 +70,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.06"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
+        android:layout_weight="0.06"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="0.4"
             android:autoSizeTextType="uniform"
             android:text="Labels" />
 
@@ -93,7 +92,7 @@
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.05"/>
+            android:layout_weight="0.05" />
 
         <Button
             android:id="@+id/add_comment_button"
@@ -103,7 +102,7 @@
             android:autoSizeTextType="uniform"
             android:backgroundTint="#afafb0"
             android:text="追加"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black" />
     </LinearLayout>
 
     <LinearLayout
@@ -196,7 +195,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="0.6"
             android:orientation="vertical">
 
             <ListView
@@ -205,18 +204,13 @@
                 android:layout_height="0dp"
                 android:layout_weight="0.7" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.3"
-                android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/comment_edittext"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.8" />
-            </LinearLayout>
+<!--            <EditText-->
+<!--                android:id="@+id/comment_edittext"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_weight="0.3"-->
+<!--                android:hint="comment" />-->
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -3,13 +3,25 @@ package com.alha_app.issuemanager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.Insets;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
+import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowManager;
+import android.view.WindowMetrics;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -31,24 +43,26 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ViewerActivity extends AppCompatActivity {
+    private Handler handler;
     private IssueManager issueManager;
-
     private TextView titleText;
     private TextView bodyText;
     private ArrayList<String> labelList;
+    private EditText commentText;
 
     private String token;
     private String owner;
     private String repo;
     private String issueNumber;
-    private Handler handler;
+
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewer);
 
-        issueManager = (IssueManager)this.getApplication();
+        issueManager = (IssueManager) this.getApplication();
         token = issueManager.getToken();
         owner = issueManager.getOwner();
         repo = issueManager.getRepo();
@@ -70,9 +84,14 @@ public class ViewerActivity extends AppCompatActivity {
         bodyText.setText(issueManager.getIssueBody());
         bodyText.setMovementMethod(new ScrollingMovementMethod());
 
+        // ダイアログ用のレイアウトを作成
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.layout_comment_dialog, null);
+        commentText = dialogView.findViewById(R.id.comment_edittext);
+
         boolean isDefault = true;
-        for(int i = 0; i < labelList.size(); i++){
-            switch (labelList.get(i)){
+        for (int i = 0; i < labelList.size(); i++) {
+            switch (labelList.get(i)) {
                 case "bug":
                     TextView bugLabel = findViewById(R.id.label_bug);
                     bugLabel.setVisibility(View.VISIBLE);
@@ -107,27 +126,41 @@ public class ViewerActivity extends AppCompatActivity {
                     break;
             }
         }
-        if(!isDefault){
+        if (!isDefault) {
             TextView defaultLabel = findViewById(R.id.label_default);
             defaultLabel.setVisibility(View.GONE);
         }
 
         Button addCommentButton = findViewById(R.id.add_comment_button);
         addCommentButton.setOnClickListener(view -> {
-            new Thread(() -> {
-                addComment();
-                getComments();
-            }).start();
+            if(dialog == null) {
+                dialog = new AlertDialog.Builder(this)
+                        .setTitle("コメントを記入")
+                        .setView(dialogView)
+                        .setPositiveButton("投稿", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new Thread(() -> {
+                                    addComment();
+                                    getComments();
+                                }).start();
+                            }
+                        })
+                        .setNeutralButton("キャンセル", null)
+                        .create();
+                dialog.setCanceledOnTouchOutside(false);
+            }
+            dialog.show();
         });
 
         new Thread(() -> getComments()).start();
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem menuButton){
+    public boolean onOptionsItemSelected(MenuItem menuButton) {
         boolean result = true;
         int buttonId = menuButton.getItemId();
-        switch(buttonId){
+        switch (buttonId) {
             //戻るボタンが押されたとき
             case android.R.id.home:
                 //画面を終了させる
@@ -141,7 +174,7 @@ public class ViewerActivity extends AppCompatActivity {
         return result;
     }
 
-    public void getComments(){
+    public void getComments() {
         String urlString = issueManager.getCommentUrl();
 
         String json = "";
@@ -165,10 +198,12 @@ public class ViewerActivity extends AppCompatActivity {
             json = response.body().string();
             jsonResult = mapper.readTree(json);
 
-            for(int i = 0; i < jsonResult.size(); i++){
+            for (int i = 0; i < jsonResult.size(); i++) {
                 Map<String, Object> item = new HashMap<>();
                 String tmp = jsonResult.get(i).get("body").toString();
-                tmp = tmp.substring(1, tmp.length()-1);
+                tmp = tmp.substring(1, tmp.length() - 1);
+                tmp = tmp.replaceAll("\\\\r", "");
+                tmp = tmp.replaceAll("\\\\n", "\n");
                 item.put("user_image", sampleImage);
                 item.put("comment_text", tmp);
                 listData.add(item);
@@ -183,18 +218,16 @@ public class ViewerActivity extends AppCompatActivity {
                         new int[]{R.id.user_image, R.id.comment_text}
                 ));
             });
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void addComment(){
+    public void addComment() {
         String urlString = BuildConfig.URL + owner + "/" + repo + "/issues/" + issueNumber + "/comments";
 
         String json = "";
         ObjectMapper mapper = new ObjectMapper();
-
-        EditText commentText = findViewById(R.id.comment_edittext);
 
         final okhttp3.MediaType mediaTypeJson = okhttp3.MediaType.parse("application/json; charset=UTF-8");
 
@@ -215,11 +248,11 @@ public class ViewerActivity extends AppCompatActivity {
             OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
             Response response = okHttpClient.newCall(request).execute();
 
-            if (!response.isSuccessful()){
+            if (!response.isSuccessful()) {
                 Toast.makeText(issueManager, "通信エラーが発生しました", Toast.LENGTH_SHORT).show();
             }
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
