@@ -9,6 +9,7 @@ public class IssueManager extends Application {
     String token;
     String owner;
     String repo;
+    String issueUser;
     String issueTitle;
     String issueBody;
 
@@ -42,6 +43,10 @@ public class IssueManager extends Application {
             repo = preferences.getString("repo", "");
         }
         return repo;
+    }
+
+    public String getIssueUser() {
+        return issueUser;
     }
     public String getIssueTitle() {
         return issueTitle;
@@ -84,6 +89,10 @@ public class IssueManager extends Application {
         editor.putString("repo", repo);
         editor.commit();
         this.repo = repo;
+    }
+
+    public void setIssueUser(String issueUser) {
+        this.issueUser = issueUser;
     }
     public void setIssueTitle(String issueTitle) {
         this.issueTitle = issueTitle;

@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         openIssueList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                issueManager.setIssueUser(openIssueSet.get(position).getUser());
                 issueManager.setIssueTitle(openIssueSet.get(position).getTitle());
                 issueManager.setIssueBody(openIssueSet.get(position).getBody());
                 issueManager.setIssueNumber(openIssueSet.get(position).getNumber());
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         closedIssueList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                issueManager.setIssueUser(closedIssueSet.get(position).getUser());
                 issueManager.setIssueTitle(closedIssueSet.get(position).getTitle());
                 issueManager.setIssueBody(closedIssueSet.get(position).getBody());
                 issueManager.setIssueNumber(closedIssueSet.get(position).getNumber());
@@ -202,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
                 tmp = jsonResult.get(i).get("user").get("login").toString();
                 tmp = tmp.substring(1, tmp.length() - 1);
                 item.put("name", tmp);
+                issueData.setUser(tmp);
 
                 if (jsonResult.get(i).get("labels").size() == 0) {
                     item.put("labels", "default");

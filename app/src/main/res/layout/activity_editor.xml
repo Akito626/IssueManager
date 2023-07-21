@@ -94,7 +94,7 @@
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.05" />
+            android:layout_weight="0.02" />
 
         <Button
             android:id="@+id/label_button"
@@ -109,12 +109,29 @@
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.05" />
+            android:layout_weight="0.01" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3"
+            android:autoSizeTextType="uniform"
+            android:text="Assignee" />
 
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5" />
+            android:layout_weight="0.02" />
+
+        <Button
+            android:id="@+id/assignee_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:autoSizeTextType="uniform"
+            android:backgroundTint="#afafb0"
+            android:text="Edit"
+            android:textColor="@color/black" />
     </LinearLayout>
 
     <LinearLayout
@@ -126,7 +143,7 @@
         <ScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="0.45"
             android:fillViewport="true">
 
             <LinearLayout
@@ -205,11 +222,11 @@
         </ScrollView>
 
         <ScrollView
+            android:id="@+id/assignee_view"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:fillViewport="true">
-
         </ScrollView>
     </LinearLayout>
 </LinearLayout>

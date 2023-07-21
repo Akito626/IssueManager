@@ -3,6 +3,7 @@ package com.alha_app.issuemanager.model;
 import java.util.ArrayList;
 
 public class IssueData {
+    String user;
     String title;
     String body;
     String number;
@@ -10,6 +11,9 @@ public class IssueData {
 
     String commentUrl;
 
+    public String getUser() {
+        return user;
+    }
     public String getTitle() {
         return title;
     }
@@ -26,6 +30,9 @@ public class IssueData {
         return commentUrl;
     }
 
+    public void setUser(String user) {
+        this.user = user;
+    }
     public void setTitle(String title) {
         this.title = title;
     }
