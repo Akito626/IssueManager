@@ -2,10 +2,12 @@ package com.alha_app.issuemanager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,12 +18,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alha_app.issuemanager.model.IssueJson;
+import com.alha_app.issuemanager.model.LabelsDialog;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +37,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class EditorActivity extends AppCompatActivity {
+    private final int NUMBER_OF_LABEL = 6;
     private IssueManager issueManager;
     private String token;
     private String owner;
@@ -40,10 +45,7 @@ public class EditorActivity extends AppCompatActivity {
 
     private EditText titleText;
     private EditText bodyText;
-    private String issueNumber;
-    private String issueLabel;
-
-    private Spinner labelsSpinner;
+    private boolean[] choicesChecked;
     private Handler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +56,6 @@ public class EditorActivity extends AppCompatActivity {
         token = issueManager.getToken();
         owner = issueManager.getOwner();
         repo = issueManager.getRepo();
-        issueNumber = issueManager.getIssueNumber();
-        issueLabel = issueManager.getIssueLabel();
-
-        if(issueLabel == null){
-            issueLabel = "default";
-        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -81,8 +77,12 @@ public class EditorActivity extends AppCompatActivity {
             }).start();
         });
 
+        // labelの編集ボタン
+        choicesChecked = new boolean[NUMBER_OF_LABEL];
         Button labelButton = findViewById(R.id.label_button);
         labelButton.setOnClickListener(view -> {
+            DialogFragment dialog = new LabelsDialog(this, choicesChecked);
+            dialog.show(getSupportFragmentManager(), "labelsDialog");
         });
     }
 
@@ -110,6 +110,8 @@ public class EditorActivity extends AppCompatActivity {
         JsonNode jsonResult = null;
         ObjectMapper mapper = new ObjectMapper();
 
+        String[] labels = getResources().getStringArray(R.array.labels);
+
         if(titleText.getText().toString().equals("")){
             Toast.makeText(issueManager, "タイトルを入力してください", Toast.LENGTH_SHORT).show();
             return;
@@ -121,6 +123,11 @@ public class EditorActivity extends AppCompatActivity {
             IssueJson issue = new IssueJson();
             issue.setTitle(titleText.getText().toString());
             issue.setBody(bodyText.getText().toString());
+            ArrayList<String> labelList = new ArrayList<>();
+            for(int i = 0; i < choicesChecked.length; i++){
+                if(choicesChecked[i])labelList.add(labels[i]);
+            }
+            issue.setLabelList(labelList);
             json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(issue);
             final RequestBody requestBody = RequestBody.create(json, mediaTypeJson);
             System.out.println(json);
@@ -162,6 +169,24 @@ public class EditorActivity extends AppCompatActivity {
             });
         } catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    public void setLabels(){
+        TextView[] labels = new TextView[6];
+        labels[0] = findViewById(R.id.label_bug);
+        labels[1] = findViewById(R.id.label_duplicate);
+        labels[2] = findViewById(R.id.label_enhancement);
+        labels[3] = findViewById(R.id.label_invalid);
+        labels[4] = findViewById(R.id.label_question);
+        labels[5] = findViewById(R.id.label_wontfix);
+
+        for(int i = 0; i < choicesChecked.length; i++){
+            if(choicesChecked[i]){
+                labels[i].setVisibility(View.VISIBLE);
+            } else {
+                labels[i].setVisibility(View.GONE);
+            }
         }
     }
 
