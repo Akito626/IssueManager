@@ -8,11 +8,15 @@ import android.os.Handler;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.alha_app.issuemanager.model.CommentJson;
+import com.alha_app.issuemanager.model.IssueJson;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -23,6 +27,7 @@ import java.util.Objects;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ViewerActivity extends AppCompatActivity {
@@ -33,6 +38,9 @@ public class ViewerActivity extends AppCompatActivity {
     private ArrayList<String> labelList;
 
     private String token;
+    private String owner;
+    private String repo;
+    private String issueNumber;
     private Handler handler;
 
     @Override
@@ -42,6 +50,9 @@ public class ViewerActivity extends AppCompatActivity {
 
         issueManager = (IssueManager)this.getApplication();
         token = issueManager.getToken();
+        owner = issueManager.getOwner();
+        repo = issueManager.getRepo();
+        issueNumber = issueManager.getIssueNumber();
         labelList = issueManager.getIssueLabel();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -100,6 +111,14 @@ public class ViewerActivity extends AppCompatActivity {
             TextView defaultLabel = findViewById(R.id.label_default);
             defaultLabel.setVisibility(View.GONE);
         }
+
+        Button addCommentButton = findViewById(R.id.add_comment_button);
+        addCommentButton.setOnClickListener(view -> {
+            new Thread(() -> {
+                addComment();
+                getComments();
+            }).start();
+        });
 
         new Thread(() -> getComments()).start();
     }
@@ -164,6 +183,42 @@ public class ViewerActivity extends AppCompatActivity {
                         new int[]{R.id.user_image, R.id.comment_text}
                 ));
             });
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void addComment(){
+        String urlString = BuildConfig.URL + owner + "/" + repo + "/issues/" + issueNumber + "/comments";
+
+        String json = "";
+        ObjectMapper mapper = new ObjectMapper();
+
+        EditText commentText = findViewById(R.id.comment_edittext);
+
+        final okhttp3.MediaType mediaTypeJson = okhttp3.MediaType.parse("application/json; charset=UTF-8");
+
+        try {
+            CommentJson commentJson = new CommentJson();
+            commentJson.setBody(commentText.getText().toString());
+            json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(commentJson);
+            final RequestBody requestBody = RequestBody.create(json, mediaTypeJson);
+            System.out.println(json);
+
+            Request request = new Request.Builder()
+                    .url(urlString)
+                    .addHeader("Accept", "application/vnd.github+json")
+                    .addHeader("Authorization", "token " + token)
+                    .addHeader("X-GitHub-Api-Version", "2022-11-28")
+                    .post(requestBody)
+                    .build();
+            OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+            Response response = okHttpClient.newCall(request).execute();
+
+            if (!response.isSuccessful()){
+                Toast.makeText(issueManager, "通信エラーが発生しました", Toast.LENGTH_SHORT).show();
+            }
+
         } catch (Exception e){
             e.printStackTrace();
         }

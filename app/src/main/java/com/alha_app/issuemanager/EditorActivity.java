@@ -140,8 +140,7 @@ public class EditorActivity extends AppCompatActivity {
                     .post(requestBody)
                     .build();
 
-            OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                    .build();
+            OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
             Response response = okHttpClient.newCall(request).execute();
 
             json = response.body().string();
