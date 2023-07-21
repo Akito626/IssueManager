@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class IssueJson {
     String title;
     String body;
-    //ArrayList<String> arrayList = new ArrayList<>();
+    ArrayList<String> arrayList = new ArrayList<>();
 
     public String getTitle() {
         return title;
@@ -16,9 +16,9 @@ public class IssueJson {
         return body;
     }
 
-//    public ArrayList<String> getArrayList() {
-//        return arrayList;
-//    }
+    public ArrayList<String> getArrayList() {
+        return arrayList;
+    }
 
     public void setTitle(String title) {
         this.title = title;
@@ -27,7 +27,7 @@ public class IssueJson {
         this.body = body;
     }
 
-//    public void setArrayList(ArrayList<String> arrayList) {
-//        this.arrayList = arrayList;
-//    }
+    public void setArrayList(ArrayList<String> arrayList) {
+        this.arrayList = arrayList;
+    }
 }

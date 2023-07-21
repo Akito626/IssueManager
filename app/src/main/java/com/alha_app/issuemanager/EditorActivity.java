@@ -104,11 +104,7 @@ public class EditorActivity extends AppCompatActivity {
         Button saveButton = findViewById(R.id.save_button);
         saveButton.setOnClickListener(view -> {
             new Thread(() -> {
-                if(issueNumber == null){
-                    addIssue();
-                } else {
-                    //updateIssue();
-                }
+                addIssue();
             }).start();
         });
     }
@@ -192,7 +188,7 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
-//    // v4.35.0以降のみ対応
+//    // 存在しない
 //    public void updateIssue(){
 //        String urlString = BuildConfig.URL + owner + "/" + repo + "/issues/" + issueNumber;
 //
