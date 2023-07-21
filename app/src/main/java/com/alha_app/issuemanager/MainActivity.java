@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 issueManager.setIssueBody(openIssueSet.get(position).getBody());
                 issueManager.setIssueNumber(openIssueSet.get(position).getNumber());
                 issueManager.setIssueLabel(openIssueSet.get(position).getLabelList());
+                issueManager.setCommentUrl(openIssueSet.get(position).getCommentUrl());
                 startActivity(new Intent(getApplication(), ViewerActivity.class));
             }
         });
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 issueManager.setIssueBody(closedIssueSet.get(position).getBody());
                 issueManager.setIssueNumber(closedIssueSet.get(position).getNumber());
                 issueManager.setIssueLabel(closedIssueSet.get(position).getLabelList());
+                issueManager.setCommentUrl(closedIssueSet.get(position).getCommentUrl());
                 startActivity(new Intent(getApplication(), ViewerActivity.class));
             }
         });
@@ -223,6 +225,11 @@ public class MainActivity extends AppCompatActivity {
 
                 tmp = jsonResult.get(i).get("number").toString();
                 issueData.setNumber(tmp);
+
+                // commentのurl
+                tmp = jsonResult.get(i).get("comments_url").toString();
+                tmp = tmp.substring(1, tmp.length() - 1);
+                issueData.setCommentUrl(tmp);
 
                 listData.add(item);
 

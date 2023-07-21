@@ -15,6 +15,7 @@ public class IssueManager extends Application {
     String issueNumber;
     ArrayList<String> issueLabel = new ArrayList<>();
     String issuePriority;
+    String commentUrl;
 
     @Override
     public void onCreate(){
@@ -59,6 +60,9 @@ public class IssueManager extends Application {
     public String getIssuePriority() {
         return issuePriority;
     }
+    public String getCommentUrl() {
+        return commentUrl;
+    }
 
     public void setToken(String token) {
         SharedPreferences preferences = getSharedPreferences("prefData", MODE_PRIVATE);
@@ -97,5 +101,8 @@ public class IssueManager extends Application {
 
     public void setIssuePriority(String issuePriority) {
         this.issuePriority = issuePriority;
+    }
+    public void setCommentUrl(String commentUrl) {
+        this.commentUrl = commentUrl;
     }
 }

@@ -8,6 +8,8 @@ public class IssueData {
     String number;
     ArrayList<String> labelList = new ArrayList<>();
 
+    String commentUrl;
+
     public String getTitle() {
         return title;
     }
@@ -19,6 +21,9 @@ public class IssueData {
     }
     public ArrayList<String> getLabelList() {
         return labelList;
+    }
+    public String getCommentUrl() {
+        return commentUrl;
     }
 
     public void setTitle(String title) {
@@ -32,6 +37,9 @@ public class IssueData {
     }
     public void setLabelList(ArrayList<String> labelList) {
         this.labelList = labelList;
+    }
+    public void setCommentUrl(String commentUrl) {
+        this.commentUrl = commentUrl;
     }
 
     public void addLabel(String label){
