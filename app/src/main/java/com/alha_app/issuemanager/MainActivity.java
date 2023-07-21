@@ -81,8 +81,8 @@ public class MainActivity extends AppCompatActivity {
                 issueManager.setIssueTitle(openIssueSet.get(position).get("title"));
                 issueManager.setIssueBody(openIssueSet.get(position).get("body"));
                 issueManager.setIssueNumber(openIssueSet.get(position).get("number"));
-                issueManager.setIssueLabel(openIssueSet.get(position).get("label"));
-                startActivity(new Intent(getApplication(), EditorActivity.class));
+                issueManager.setIssueLabel(openIssueSet.get(position).get("labels"));
+                startActivity(new Intent(getApplication(), ViewerActivity.class));
             }
         });
         closedIssueList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -91,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
                 issueManager.setIssueTitle(closedIssueSet.get(position).get("title"));
                 issueManager.setIssueBody(closedIssueSet.get(position).get("body"));
                 issueManager.setIssueNumber(closedIssueSet.get(position).get("number"));
-                issueManager.setIssueLabel(closedIssueSet.get(position).get("label"));
-                startActivity(new Intent(getApplication(), EditorActivity.class));
+                issueManager.setIssueLabel(closedIssueSet.get(position).get("labels"));
+                startActivity(new Intent(getApplication(), ViewerActivity.class));
             }
         });
 
@@ -202,13 +202,16 @@ public class MainActivity extends AppCompatActivity {
                 issueData.put("name", tmp);
 
                 if (jsonResult.get(i).get("labels").size() == 0) {
-                    item.put("label", "default");
-                    issueData.put("label", "default");
+                    item.put("labels", "default");
+                    issueData.put("labels", "default");
                 } else {
-                    tmp = jsonResult.get(i).get("labels").get(0).get("name").toString();
-                    tmp = tmp.substring(1, tmp.length() - 1);
-                    item.put("label", tmp);
-                    issueData.put("label", tmp);
+                    tmp = jsonResult.get(i).get("labels").get(0).get("name").toString() + "\n";
+                    for(int j = 1; j < jsonResult.get(i).get("labels").size(); j++) {
+                        tmp += jsonResult.get(i).get("labels").get(j).get("name").toString() + "\n";
+                    }
+                    tmp = tmp.replaceAll("\\\"", "");
+                    item.put("labels", tmp);
+                    issueData.put("labels", tmp);
                 }
 
                 tmp = jsonResult.get(i).get("created_at").toString();
@@ -236,8 +239,8 @@ public class MainActivity extends AppCompatActivity {
                             this,
                             listData,
                             R.layout.issuelist_item,
-                            new String[]{"title", "date", "label", "name"},
-                            new int[]{R.id.title, R.id.date, R.id.label, R.id.name}
+                            new String[]{"title", "date", "labels", "name"},
+                            new int[]{R.id.title, R.id.date, R.id.labels, R.id.name}
                     ));
                 });
             } else if (s.equals("closed")) {
@@ -246,8 +249,8 @@ public class MainActivity extends AppCompatActivity {
                             this,
                             listData,
                             R.layout.issuelist_item,
-                            new String[]{"title", "date", "label", "name"},
-                            new int[]{R.id.title, R.id.date, R.id.label, R.id.name}
+                            new String[]{"title", "date", "labels", "name"},
+                            new int[]{R.id.title, R.id.date, R.id.labels, R.id.name}
                     ));
                 });
             }
