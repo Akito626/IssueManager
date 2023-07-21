@@ -10,6 +10,9 @@ import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
     private IssueManager issueManager;
+    private String tokenStr;
+    private String ownerStr;
+    private String repoStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,14 +20,20 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         issueManager = (IssueManager) this.getApplication();
-
-        if(issueManager.getToken() != null && issueManager.getOwner() != null && issueManager.getRepo() != null){
-            startActivity(new Intent(getApplication(), MainActivity.class));
-        }
+        tokenStr = issueManager.getToken();
+        ownerStr = issueManager.getOwner();
+        repoStr = issueManager.getRepo();
 
         EditText token = findViewById(R.id.token);
         EditText owner = findViewById(R.id.owner);
         EditText repo = findViewById(R.id.repo);
+        token.setText(tokenStr);
+        owner.setText(ownerStr);
+        repo.setText(repoStr);
+
+        if(!tokenStr.equals("") && !ownerStr.equals("") && !repoStr.equals("")){
+            startActivity(new Intent(getApplication(), MainActivity.class));
+        }
 
         Button loginButton = findViewById(R.id.login_button);
         loginButton.setOnClickListener(view -> {
