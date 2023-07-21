@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +18,8 @@ import android.widget.Toast;
 import com.alha_app.issuemanager.model.IssueJson;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -39,6 +43,7 @@ public class EditorActivity extends AppCompatActivity {
     private String issueNumber;
     private String issueLabel;
 
+    private Spinner labelsSpinner;
     private Handler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,38 +66,6 @@ public class EditorActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Spinner labelsSpinner = findViewById(R.id.labels_spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                R.layout.spinner_item,
-                getResources().getStringArray(R.array.labels)
-        );
-        adapter.setDropDownViewResource(R.layout.spinner_item);
-        labelsSpinner.setAdapter(adapter);
-        switch (issueLabel){
-            case "default":
-                labelsSpinner.setSelection(0);
-                break;
-            case "bug":
-                labelsSpinner.setSelection(1);
-                break;
-            case "duplicate":
-                labelsSpinner.setSelection(2);
-                break;
-            case "enhancement":
-                labelsSpinner.setSelection(3);
-                break;
-            case "invalid":
-                labelsSpinner.setSelection(4);
-                break;
-            case "question":
-                labelsSpinner.setSelection(5);
-                break;
-            case "wontfix":
-                labelsSpinner.setSelection(6);
-                break;
-        }
-
         handler = new Handler();
 
         titleText = findViewById(R.id.title_text);
@@ -106,6 +79,10 @@ public class EditorActivity extends AppCompatActivity {
             new Thread(() -> {
                 addIssue();
             }).start();
+        });
+
+        Button labelButton = findViewById(R.id.label_button);
+        labelButton.setOnClickListener(view -> {
         });
     }
 

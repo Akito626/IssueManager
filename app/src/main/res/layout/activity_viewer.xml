@@ -106,22 +106,6 @@
         android:layout_weight="0.04"
         android:orientation="horizontal"
         android:layout_margin="10dp">
-
-        <Spinner
-            android:id="@+id/labels_spinner"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.42" />
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.06"/>
-
-        <Spinner
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.42" />
     </LinearLayout>
 
     <Space

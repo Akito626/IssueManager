@@ -22,21 +22,21 @@ public class IssueManager extends Application {
     public String getToken() {
         if(token == null) {
             SharedPreferences preferences = getSharedPreferences("prefData", MODE_PRIVATE);
-            token = preferences.getString("token", null);
+            token = preferences.getString("token", "");
         }
         return token;
     }
     public String getOwner() {
         if(owner == null) {
             SharedPreferences preferences = getSharedPreferences("prefData", MODE_PRIVATE);
-            owner = preferences.getString("owner", null);
+            owner = preferences.getString("owner", "");
         }
         return owner;
     }
     public String getRepo() {
         if(repo == null) {
             SharedPreferences preferences = getSharedPreferences("prefData", MODE_PRIVATE);
-            repo = preferences.getString("repo", null);
+            repo = preferences.getString("repo", "");
         }
         return repo;
     }
