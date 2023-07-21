@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -33,9 +34,11 @@ public class ViewerActivity extends AppCompatActivity {
 
         titleText = findViewById(R.id.title_text);
         titleText.setText(issueManager.getIssueTitle());
+        titleText.setMovementMethod(new ScrollingMovementMethod());
 
         bodyText = findViewById(R.id.body_text);
         bodyText.setText(issueManager.getIssueBody());
+        bodyText.setMovementMethod(new ScrollingMovementMethod());
 
         boolean isDefault = true;
         for(int i = 0; i < labelList.size(); i++){
