@@ -45,6 +45,7 @@ import okhttp3.Response;
 public class ViewerActivity extends AppCompatActivity {
     private Handler handler;
     private IssueManager issueManager;
+    private TextView issueUser;
     private TextView titleText;
     private TextView bodyText;
     private ArrayList<String> labelList;
@@ -75,6 +76,9 @@ public class ViewerActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         handler = new Handler();
+
+        issueUser = findViewById(R.id.issue_user);
+        issueUser.setText(issueManager.getIssueUser());
 
         titleText = findViewById(R.id.title_text);
         titleText.setText(issueManager.getIssueTitle());

@@ -1,5 +1,6 @@
 package com.alha_app.issuemanager;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
@@ -39,6 +40,7 @@ import okhttp3.Response;
 
 public class EditorActivity extends AppCompatActivity {
     private final int NUMBER_OF_LABEL = 6;
+    private Handler handler;
     private IssueManager issueManager;
     private String token;
     private String owner;
@@ -47,7 +49,7 @@ public class EditorActivity extends AppCompatActivity {
     private EditText titleText;
     private EditText bodyText;
     private boolean[] choicesChecked;
-    private Handler handler;
+    private AlertDialog assigneeDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +85,18 @@ public class EditorActivity extends AppCompatActivity {
         labelButton.setOnClickListener(view -> {
             DialogFragment dialog = new LabelsDialog(this, choicesChecked);
             dialog.show(getSupportFragmentManager(), "labelsDialog");
+        });
+
+        Button assigneeButton = findViewById(R.id.assignee_button);
+        assigneeButton.setOnClickListener(view -> {
+            if(assigneeDialog == null){
+                assigneeDialog = new AlertDialog.Builder(this)
+                        .setTitle("割り当てる人の名前を記入")
+                        .setMessage("開発中")
+                        .setPositiveButton("OK", null)
+                        .create();
+            }
+            assigneeDialog.show();
         });
     }
 
@@ -127,7 +141,9 @@ public class EditorActivity extends AppCompatActivity {
             for(int i = 0; i < choicesChecked.length; i++){
                 if(choicesChecked[i])labelList.add(labels[i]);
             }
-            issue.setLabelList(labelList);
+            issue.setLabels(labelList);
+            ArrayList<String> assigneeList = new ArrayList<>();
+            issue.setAssignees(assigneeList);
             json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(issue);
             final RequestBody requestBody = RequestBody.create(json, mediaTypeJson);
             System.out.println(json);

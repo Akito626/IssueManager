@@ -13,14 +13,35 @@
         android:layout_height="wrap_content"
         android:background="#afafb0"></androidx.appcompat.widget.Toolbar>
 
-    <TextView
+<!--    <TextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:layout_weight="0.06"-->
+<!--        android:autoSizeTextType="uniform"-->
+<!--        android:text="タイトル"-->
+<!--        android:textColor="@color/black" />-->
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="10dp"
         android:layout_weight="0.06"
-        android:autoSizeTextType="uniform"
-        android:text="タイトル"
-        android:textColor="@color/black" />
+        android:layout_margin="10dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:autoSizeTextType="uniform"
+            android:text="タイトル"/>
+
+        <TextView
+            android:id="@+id/issue_user"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:autoSizeTextType="uniform" />
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"

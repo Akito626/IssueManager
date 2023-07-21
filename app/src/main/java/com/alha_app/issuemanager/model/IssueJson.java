@@ -7,7 +7,8 @@ import java.util.ArrayList;
 public class IssueJson {
     String title;
     String body;
-    ArrayList<String> labelList = new ArrayList<>();
+    ArrayList<String> labels = new ArrayList<>();
+    ArrayList<String> assignees = new ArrayList<>();
 
     public String getTitle() {
         return title;
@@ -15,8 +16,13 @@ public class IssueJson {
     public String getBody() {
         return body;
     }
-    public ArrayList<String> getLabelList() {
-        return labelList;
+
+    public ArrayList<String> getLabels() {
+        return labels;
+    }
+
+    public ArrayList<String> getAssignees() {
+        return assignees;
     }
 
     public void setTitle(String title) {
@@ -25,7 +31,10 @@ public class IssueJson {
     public void setBody(String body) {
         this.body = body;
     }
-    public void setLabelList(ArrayList<String> labelList) {
-        this.labelList = labelList;
+    public void setLabels(ArrayList<String> labels) {
+        this.labels = labels;
+    }
+    public void setAssignees(ArrayList<String> assignees) {
+        this.assignees = assignees;
     }
 }
