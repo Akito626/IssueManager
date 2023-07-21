@@ -9,13 +9,13 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="0.15"
-        android:scaleType="fitCenter"/>
+        android:scaleType="fitStart"/>
 
     <TextView
         android:id="@+id/comment_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.85"
-        android:textSize="30dp"
+        android:textSize="20dp"
         android:gravity="center_vertical|left"/>
 </LinearLayout>
