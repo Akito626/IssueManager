@@ -5,9 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapShader;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,27 +12,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alha_app.issuemanager.model.IssueData;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.w3c.dom.Text;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -49,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private String repo;
     private ListView openIssueList;
     private ListView closedIssueList;
-    private ArrayList<IssueData> openIssueSet;
-    private ArrayList<IssueData> closedIssueSet;
+    private ArrayList<IssueData> openIssueData;
+    private ArrayList<IssueData> closedIssueData;
     private Handler handler;
 
     private TextView openText;
@@ -73,30 +60,30 @@ public class MainActivity extends AppCompatActivity {
         closedIssueList = findViewById(R.id.closed_issuelist);
         handler = new Handler();
 
-        openIssueSet = new ArrayList<>();
-        closedIssueSet = new ArrayList<>();
+        openIssueData = new ArrayList<>();
+        closedIssueData = new ArrayList<>();
 
         openIssueList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                issueManager.setIssueUser(openIssueSet.get(position).getUser());
-                issueManager.setIssueTitle(openIssueSet.get(position).getTitle());
-                issueManager.setIssueBody(openIssueSet.get(position).getBody());
-                issueManager.setIssueNumber(openIssueSet.get(position).getNumber());
-                issueManager.setIssueLabel(openIssueSet.get(position).getLabelList());
-                issueManager.setCommentUrl(openIssueSet.get(position).getCommentUrl());
+                issueManager.setIssueUser(openIssueData.get(position).getUser());
+                issueManager.setIssueTitle(openIssueData.get(position).getTitle());
+                issueManager.setIssueBody(openIssueData.get(position).getBody());
+                issueManager.setIssueNumber(openIssueData.get(position).getNumber());
+                issueManager.setIssueLabel(openIssueData.get(position).getLabelList());
+                issueManager.setCommentUrl(openIssueData.get(position).getCommentUrl());
                 startActivity(new Intent(getApplication(), ViewerActivity.class));
             }
         });
         closedIssueList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                issueManager.setIssueUser(closedIssueSet.get(position).getUser());
-                issueManager.setIssueTitle(closedIssueSet.get(position).getTitle());
-                issueManager.setIssueBody(closedIssueSet.get(position).getBody());
-                issueManager.setIssueNumber(closedIssueSet.get(position).getNumber());
-                issueManager.setIssueLabel(closedIssueSet.get(position).getLabelList());
-                issueManager.setCommentUrl(closedIssueSet.get(position).getCommentUrl());
+                issueManager.setIssueUser(closedIssueData.get(position).getUser());
+                issueManager.setIssueTitle(closedIssueData.get(position).getTitle());
+                issueManager.setIssueBody(closedIssueData.get(position).getBody());
+                issueManager.setIssueNumber(closedIssueData.get(position).getNumber());
+                issueManager.setIssueLabel(closedIssueData.get(position).getLabelList());
+                issueManager.setCommentUrl(closedIssueData.get(position).getCommentUrl());
                 startActivity(new Intent(getApplication(), ViewerActivity.class));
             }
         });
@@ -141,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.action_update) {
             TextView textView = findViewById(R.id.nodata_text);
             textView.setVisibility(View.INVISIBLE);
+            openIssueData.clear();
+            closedIssueData.clear();
             new Thread(() -> {
                 int i = getIssues("closed");
                 closedText.setText("Closed " + i);
@@ -237,9 +226,9 @@ public class MainActivity extends AppCompatActivity {
                 listData.add(item);
 
                 if (s.equals("open")) {
-                    openIssueSet.add(issueData);
+                    openIssueData.add(issueData);
                 } else if (s.equals("closed")) {
-                    closedIssueSet.add(issueData);
+                    closedIssueData.add(issueData);
                 }
             }
 
