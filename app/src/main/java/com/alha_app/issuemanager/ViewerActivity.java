@@ -93,6 +93,7 @@ public class ViewerActivity extends AppCompatActivity {
         View dialogView = inflater.inflate(R.layout.layout_comment_dialog, null);
         commentText = dialogView.findViewById(R.id.comment_edittext);
 
+        // issueのラベルを表示。なければdefaultを表示
         boolean isDefault = true;
         for (int i = 0; i < labelList.size(); i++) {
             switch (labelList.get(i)) {
@@ -135,6 +136,7 @@ public class ViewerActivity extends AppCompatActivity {
             defaultLabel.setVisibility(View.GONE);
         }
 
+        // コメントの追加ボタン
         Button addCommentButton = findViewById(R.id.add_comment_button);
         addCommentButton.setOnClickListener(view -> {
             if(dialog == null) {
@@ -157,6 +159,7 @@ public class ViewerActivity extends AppCompatActivity {
             dialog.show();
         });
 
+        // コメントを取得
         new Thread(() -> getComments()).start();
     }
 
@@ -200,6 +203,7 @@ public class ViewerActivity extends AppCompatActivity {
             json = response.body().string();
             jsonResult = mapper.readTree(json);
 
+            // 全てのコメントの内容と書いた人物を取得
             for (int i = 0; i < jsonResult.size(); i++) {
                 Map<String, Object> item = new HashMap<>();
                 String tmp = jsonResult.get(i).get("user").get("login").toString();
@@ -213,6 +217,7 @@ public class ViewerActivity extends AppCompatActivity {
                 listData.add(item);
             }
 
+            // 取得したデータをリストにセット
             handler.post(() -> {
                 commentList.setAdapter(new SimpleAdapter(
                         this,
@@ -236,6 +241,7 @@ public class ViewerActivity extends AppCompatActivity {
         final okhttp3.MediaType mediaTypeJson = okhttp3.MediaType.parse("application/json; charset=UTF-8");
 
         try {
+            // 送るJsonデータを作成
             CommentJson commentJson = new CommentJson();
             commentJson.setBody(commentText.getText().toString());
             json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(commentJson);

@@ -73,10 +73,11 @@ public class EditorActivity extends AppCompatActivity {
         bodyText = findViewById(R.id.body_text);
         bodyText.setText(issueManager.getIssueBody());
 
+        // 登録ボタンを押したときのイベント
         Button createButton = findViewById(R.id.create_button);
         createButton.setOnClickListener(view -> {
             if(titleText.getText().toString().equals("")){
-                Toast.makeText(issueManager, "タイトルを記入してください", Toast.LENGTH_SHORT).show();
+                Toast.makeText(issueManager, "タイトルを入力してください", Toast.LENGTH_SHORT).show();
                 return;
             }
             DialogFragment dialog = new CreateIssueDialog(this);
@@ -91,6 +92,7 @@ public class EditorActivity extends AppCompatActivity {
             dialog.show(getSupportFragmentManager(), "labelsDialog");
         });
 
+        // issueに人を割り当てるボタン
         Button assigneeButton = findViewById(R.id.assignee_button);
         assigneeButton.setOnClickListener(view -> {
             if(assigneeDialog == null){
@@ -125,19 +127,14 @@ public class EditorActivity extends AppCompatActivity {
     public void addIssue(){
         String urlString = BuildConfig.URL + owner + "/" + repo + "/issues";
         String json = "";
-        JsonNode jsonResult = null;
         ObjectMapper mapper = new ObjectMapper();
 
         String[] labels = getResources().getStringArray(R.array.labels);
 
-        if(titleText.getText().toString().equals("")){
-            Toast.makeText(issueManager, "タイトルを入力してください", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         final okhttp3.MediaType mediaTypeJson = okhttp3.MediaType.parse("application/json; charset=UTF-8");
 
         try {
+            // 送るJsonデータを作成
             IssueJson issue = new IssueJson();
             issue.setTitle(titleText.getText().toString());
             issue.setBody(bodyText.getText().toString());
@@ -164,9 +161,6 @@ public class EditorActivity extends AppCompatActivity {
             Response response = okHttpClient.newCall(request).execute();
 
             json = response.body().string();
-            //jsonResult = mapper.readTree(json);
-            System.out.println(response.code());
-            System.out.println(json);
 
             if(response.code() == 401){
                 handler.post(() -> {
@@ -176,7 +170,6 @@ public class EditorActivity extends AppCompatActivity {
             }
 
             if(!response.isSuccessful()){
-                String s = json;
                 handler.post(() -> {
                     Toast.makeText(issueManager, "通信に失敗しました", Toast.LENGTH_LONG).show();
                 });
@@ -191,6 +184,7 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
+    // 選択したラベルのみ見えるようにする
     public void setLabels(){
         TextView defaultLabel = findViewById(R.id.label_default);
         TextView[] labels = new TextView[6];
@@ -220,63 +214,4 @@ public class EditorActivity extends AppCompatActivity {
     public void createIssue(){
         new Thread(() -> addIssue()).start();
     }
-
-//    // 存在しない
-//    public void updateIssue(){
-//        String urlString = BuildConfig.URL + owner + "/" + repo + "/issues/" + issueNumber;
-//
-//        System.out.println(urlString);
-//
-//        String json = "";
-//        JsonNode jsonResult = null;
-//        ObjectMapper mapper = new ObjectMapper();
-//
-//        final okhttp3.MediaType mediaTypeJson = okhttp3.MediaType.parse("application/json; charset=UTF-8");
-//
-//        try {
-//            IssueJson issue = new IssueJson();
-//            issue.setTitle(titleText.getText().toString());
-//            issue.setBody(bodyText.getText().toString());
-//            json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(issue);
-//            final RequestBody requestBody = RequestBody.create(json, mediaTypeJson);
-//            System.out.println(json);
-//
-//            Request request = new Request.Builder()
-//                    .url(urlString)
-//                    .addHeader("Accept", "application/vnd.github+json")
-//                    .addHeader("Authorization", "token " + token)
-//                    .addHeader("X-GitHub-Api-Version", "2022-11-28")
-//                    .patch(requestBody)
-//                    .build();
-//
-//            OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-//            Response response = okHttpClient.newCall(request).execute();
-//
-//            json = response.body().string();
-//            //jsonResult = mapper.readTree(json);
-//            System.out.println(response.code());
-//            System.out.println(json);
-//
-//            if(response.code() == 401){
-//                handler.post(() -> {
-//                    Toast.makeText(issueManager, "不正なtokenです", Toast.LENGTH_SHORT).show();
-//                });
-//                return;
-//            }
-//
-//            if(!response.isSuccessful()){
-//                String s = json;
-//                handler.post(() -> {
-//                    Toast.makeText(issueManager, "GitBucketのバージョンが古い可能性があります(v4.30.0未満)", Toast.LENGTH_LONG).show();
-//                });
-//                return;
-//            }
-//
-//            handler.post(() -> {
-//                Toast.makeText(issueManager, "保存しました", Toast.LENGTH_SHORT).show();
-//            });
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        }
-//    }
 }

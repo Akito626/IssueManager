@@ -13,15 +13,6 @@
         android:layout_height="wrap_content"
         android:background="#afafb0"></androidx.appcompat.widget.Toolbar>
 
-<!--    <TextView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:layout_margin="10dp"-->
-<!--        android:layout_weight="0.06"-->
-<!--        android:autoSizeTextType="uniform"-->
-<!--        android:text="タイトル"-->
-<!--        android:textColor="@color/black" />-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -108,7 +99,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.3"
             android:autoSizeTextType="uniform"
-            android:text="Comment" />
+            android:text="コメント" />
 
         <Space
             android:layout_width="0dp"
@@ -135,7 +126,7 @@
         <ScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.45"
+            android:layout_weight="0.43"
             android:fillViewport="true">
 
             <LinearLayout
@@ -213,6 +204,11 @@
             </LinearLayout>
         </ScrollView>
 
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.02"/>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -224,14 +220,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="0.7" />
-
-
-<!--            <EditText-->
-<!--                android:id="@+id/comment_edittext"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="0dp"-->
-<!--                android:layout_weight="0.3"-->
-<!--                android:hint="comment" />-->
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
