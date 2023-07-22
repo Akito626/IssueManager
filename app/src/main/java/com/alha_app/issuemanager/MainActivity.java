@@ -139,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
                 i = getIssues("open");
                 openText.setText("Open " + i);
             }).start();
+        } else if (item.getItemId() == R.id.action_setting){
+            startActivity(new Intent(getApplication(), SettingActivity.class));
         } else if (item.getItemId() == R.id.action_logout) {    // ログアウトボタンを押すとログイン画面に移動
             issueManager.setToken(null);
             issueManager.setOwner(null);
@@ -242,6 +244,12 @@ public class MainActivity extends AppCompatActivity {
                     closedIssueData.add(issueData);
                 }
             }
+
+            Map<String, Object> issueMap = new HashMap<>();
+            for (int i = 0; i < openIssueData.size(); i++){
+                issueMap.put(openIssueData.get(i).getNumber(), openIssueData.get(i).getTitle());
+            }
+            issueManager.setIssueMap(issueMap);
 
             // openとclosedをそれぞれのリストに表示
             if (s.equals("open")) {
