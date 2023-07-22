@@ -26,7 +26,7 @@ public class CreateIssueDialog extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("警告")
-                .setMessage("登録したissueはアプリ上では編集できません。確認の上登録してください")
+                .setMessage("登録したissueはアプリ上では編集できません。\n確認の上登録してください。")
                 .setPositiveButton("登録", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
