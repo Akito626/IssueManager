@@ -15,6 +15,11 @@
         app:showAsAction="ifRoom"/>
 
     <item
+        android:id="@+id/action_setting"
+        android:title="設定"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/action_logout"
         android:title="ログアウト"
         app:showAsAction="never"/>
