@@ -75,6 +75,10 @@ public class EditorActivity extends AppCompatActivity {
 
         Button createButton = findViewById(R.id.create_button);
         createButton.setOnClickListener(view -> {
+            if(titleText.getText().toString().equals("")){
+                Toast.makeText(issueManager, "タイトルを記入してください", Toast.LENGTH_SHORT).show();
+                return;
+            }
             DialogFragment dialog = new CreateIssueDialog(this);
             dialog.show(getSupportFragmentManager(), "createDialog");
         });
