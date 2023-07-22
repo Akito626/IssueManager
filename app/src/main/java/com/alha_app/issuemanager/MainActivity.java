@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         openIssueData = new ArrayList<>();
         closedIssueData = new ArrayList<>();
 
+        // openのissueListをクリックした時のイベント
         openIssueList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -75,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplication(), ViewerActivity.class));
             }
         });
+
+        // closeのissueListをクリックした時のイベント
         closedIssueList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -88,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // openを押すとopenのissueを表示
         openText = findViewById(R.id.open);
         openText.setOnClickListener(v -> {
             closedIssueList.setVisibility(View.INVISIBLE);
@@ -95,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
             openText.setBackgroundColor(Color.parseColor("#afafb0"));
             closedText.setBackgroundColor(Color.parseColor("#00000000"));
         });
+        // closedを押すとclosedのissueを表示
         closedText = findViewById(R.id.closed);
         closedText.setOnClickListener(v -> {
             openIssueList.setVisibility(View.INVISIBLE);
@@ -103,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
             openText.setBackgroundColor(Color.parseColor("#00000000"));
         });
 
+        // 起動時に一度データを取得する
         new Thread(() -> {
             int i = getIssues("closed");
             closedText.setText("Closed " + i);
@@ -119,13 +125,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //　追加ボタンを押すと閲覧画面に移動
         if (item.getItemId() == R.id.action_add) {
-            issueManager.setIssueTitle(null);
-            issueManager.setIssueBody(null);
-            issueManager.setIssueNumber(null);
-            issueManager.setIssueLabel(null);
             startActivity(new Intent(getApplication(), EditorActivity.class));
-        } else if (item.getItemId() == R.id.action_update) {
+        } else if (item.getItemId() == R.id.action_update) {    // updateボタンを押すとデータを再取得
             TextView textView = findViewById(R.id.nodata_text);
             textView.setVisibility(View.INVISIBLE);
             openIssueData.clear();
@@ -136,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 i = getIssues("open");
                 openText.setText("Open " + i);
             }).start();
-        } else if (item.getItemId() == R.id.action_logout) {
+        } else if (item.getItemId() == R.id.action_logout) {    // ログアウトボタンを押すとログイン画面に移動
             issueManager.setToken(null);
             issueManager.setOwner(null);
             issueManager.setRepo(null);
@@ -163,6 +166,8 @@ public class MainActivity extends AppCompatActivity {
             Response response = okHttpClient.newCall(request).execute();
             json = response.body().string();
             jsonResult = mapper.readTree(json);
+
+            // データがなければデータがないことを表示
             if (jsonResult.size() == 0) {
                 handler.post(() -> {
                     TextView textView = findViewById(R.id.nodata_text);
@@ -177,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 Map<String, String> item = new HashMap<>();
                 IssueData issueData = new IssueData();
 
+                // タイトルを取得
                 tmp = jsonResult.get(i).get("title").toString();
                 tmp = tmp.substring(1, tmp.length() - 1);
                 tmp = tmp.replaceAll("\\\\r", "");
@@ -184,17 +190,20 @@ public class MainActivity extends AppCompatActivity {
                 item.put("title", tmp);
                 issueData.setTitle(tmp);
 
+                // 内容を取得
                 tmp = jsonResult.get(i).get("body").toString();
                 tmp = tmp.substring(1, tmp.length() - 1);
                 tmp = tmp.replaceAll("\\\\r", "");
                 tmp = tmp.replaceAll("\\\\n", "\n");
                 issueData.setBody(tmp);
 
+                // issueを登録した人を取得
                 tmp = jsonResult.get(i).get("user").get("login").toString();
                 tmp = tmp.substring(1, tmp.length() - 1);
                 item.put("name", tmp);
                 issueData.setUser(tmp);
 
+                // ラベルを取得する。設定されていなければdefaultをセット
                 if (jsonResult.get(i).get("labels").size() == 0) {
                     item.put("labels", "default");
                     issueData.addLabel("default");
@@ -209,12 +218,14 @@ public class MainActivity extends AppCompatActivity {
                     item.put("labels", tmp);
                 }
 
+                // issueが登録された日時を取得
                 tmp = jsonResult.get(i).get("created_at").toString();
                 tmp = tmp.substring(1, tmp.length() - 1);
                 tmp = tmp.replace("T", " ");
                 tmp = tmp.replace("Z", "");
                 item.put("date", tmp);
 
+                // issueNumberを取得
                 tmp = jsonResult.get(i).get("number").toString();
                 issueData.setNumber(tmp);
 
@@ -232,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            // openとclosedをそれぞれのリストに表示
             if (s.equals("open")) {
                 handler.post(() -> {
                     openIssueList.setAdapter(new SimpleAdapter(

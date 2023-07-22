@@ -87,7 +87,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.2"
+            android:layout_weight="0.21"
             android:autoSizeTextType="uniform"
             android:text="Labels" />
 
@@ -100,7 +100,7 @@
             android:id="@+id/label_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.2"
+            android:layout_weight="0.21"
             android:autoSizeTextType="uniform"
             android:backgroundTint="#afafb0"
             android:text="Edit"
@@ -109,12 +109,12 @@
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.01" />
+            android:layout_weight="0.02" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.3"
+            android:layout_weight="0.31"
             android:autoSizeTextType="uniform"
             android:text="Assignee" />
 
@@ -127,7 +127,7 @@
             android:id="@+id/assignee_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.2"
+            android:layout_weight="0.21"
             android:autoSizeTextType="uniform"
             android:backgroundTint="#afafb0"
             android:text="Edit"
@@ -143,7 +143,7 @@
         <ScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.45"
+            android:layout_weight="0.44"
             android:fillViewport="true">
 
             <LinearLayout
@@ -221,11 +221,16 @@
             </LinearLayout>
         </ScrollView>
 
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.02"/>
+
         <ScrollView
             android:id="@+id/assignee_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
+            android:layout_weight="0.54"
             android:fillViewport="true">
         </ScrollView>
     </LinearLayout>

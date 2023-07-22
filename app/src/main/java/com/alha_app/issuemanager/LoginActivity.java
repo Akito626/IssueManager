@@ -19,6 +19,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // 保存しているデータを取得し、セットする。(ログアウトや戻るボタンを押したときに再入力の手間を省くため)
         issueManager = (IssueManager) this.getApplication();
         tokenStr = issueManager.getToken();
         ownerStr = issueManager.getOwner();
@@ -31,10 +32,12 @@ public class LoginActivity extends AppCompatActivity {
         owner.setText(ownerStr);
         repo.setText(repoStr);
 
+        // 全て入力されていれば自動ログイン
         if(!tokenStr.equals("") && !ownerStr.equals("") && !repoStr.equals("")){
             startActivity(new Intent(getApplication(), MainActivity.class));
         }
 
+        // ログインボタンを押したときのイベント
         Button loginButton = findViewById(R.id.login_button);
         loginButton.setOnClickListener(view -> {
             if(token.getText().toString().equals("") || owner.getText().toString().equals("") || repo.getText().toString().equals("")){
