@@ -188,8 +188,6 @@ public class ViewerActivity extends AppCompatActivity {
         ListView commentList = findViewById(R.id.comment_list);
         ArrayList<Map<String, Object>> listData = new ArrayList<>();
 
-        int sampleImage = R.drawable.ic_sample_face;
-
         try {
             Request request = new Request.Builder()
                     .addHeader("Accept", "application/vnd.github+json")
@@ -204,11 +202,13 @@ public class ViewerActivity extends AppCompatActivity {
 
             for (int i = 0; i < jsonResult.size(); i++) {
                 Map<String, Object> item = new HashMap<>();
-                String tmp = jsonResult.get(i).get("body").toString();
+                String tmp = jsonResult.get(i).get("user").get("login").toString();
+                tmp = tmp.substring(1, tmp.length() - 1);
+                item.put("comment_user", tmp);
+                tmp = jsonResult.get(i).get("body").toString();
                 tmp = tmp.substring(1, tmp.length() - 1);
                 tmp = tmp.replaceAll("\\\\r", "");
                 tmp = tmp.replaceAll("\\\\n", "\n");
-                item.put("user_image", sampleImage);
                 item.put("comment_text", tmp);
                 listData.add(item);
             }
@@ -218,8 +218,8 @@ public class ViewerActivity extends AppCompatActivity {
                         this,
                         listData,
                         R.layout.comment_list_item,
-                        new String[]{"user_image", "comment_text"},
-                        new int[]{R.id.user_image, R.id.comment_text}
+                        new String[]{"comment_user", "comment_text"},
+                        new int[]{R.id.comment_user, R.id.comment_text}
                 ));
             });
         } catch (Exception e) {
