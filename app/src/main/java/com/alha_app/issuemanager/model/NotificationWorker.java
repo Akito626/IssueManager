@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import okhttp3.OkHttpClient;
@@ -28,7 +29,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class NotificationWorker extends Worker {
-    private Map<String, Object> preData = new HashMap<>();
+    public static HashSet<String> preData;
     final public static String WORK_TAG = "NotificationWorkerTAG";
     public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters params){
         super(context, params);
@@ -40,7 +41,6 @@ public class NotificationWorker extends Worker {
         String CHANNEL_ID = "ISSUE CHANNEL";
 
         Data data = getInputData();
-        Map<String, Object> issueMap = data.getKeyValueMap();
         String token = data.getString("token");
         String owner = data.getString("owner");
         String repo = data.getString("repo");
@@ -64,18 +64,28 @@ public class NotificationWorker extends Worker {
             jsonResult = mapper.readTree(json);
 
             ArrayList<String> titleList = new ArrayList<>();
-            for (int i = 0; i < jsonResult.size(); i++) {
-                // タイトルを取得
-                String title = jsonResult.get(i).get("title").toString();
-                title = title.substring(1, title.length() - 1);
-                title = title.replaceAll("\\\\r", "");
-                title = title.replaceAll("\\\\n", "\n");
+            if(preData == null){
+                preData = new HashSet<>();
+                for (int i = 0; i < jsonResult.size(); i++) {
+                    // issueNumberを取得
+                    String number = jsonResult.get(i).get("number").toString();
+                    preData.add(number);
+                }
+            } else {
+                for (int i = 0; i < jsonResult.size(); i++) {
+                    // タイトルを取得
+                    String title = jsonResult.get(i).get("title").toString();
+                    title = title.substring(1, title.length() - 1);
+                    title = title.replaceAll("\\\\r", "");
+                    title = title.replaceAll("\\\\n", "\n");
 
-                // issueNumberを取得
-                String number = jsonResult.get(i).get("number").toString();
+                    // issueNumberを取得
+                    String number = jsonResult.get(i).get("number").toString();
 
-                if(issueMap.get(number) == null){
-                    titleList.add(title);
+                    if (!preData.contains(number)) {
+                        titleList.add(title);
+                        preData.add(number);
+                    }
                 }
             }
 
