@@ -3,7 +3,9 @@ package com.alha_app.issuemanager.model;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
@@ -15,6 +17,7 @@ import androidx.work.WorkerParameters;
 
 import com.alha_app.issuemanager.BuildConfig;
 import com.alha_app.issuemanager.IssueManager;
+import com.alha_app.issuemanager.LoginActivity;
 import com.alha_app.issuemanager.R;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -60,6 +63,9 @@ public class NotificationWorker extends Worker {
                     .build();
             OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
             Response response = okHttpClient.newCall(request).execute();
+
+            if(!response.isSuccessful()) return Result.failure();
+
             json = response.body().string();
             jsonResult = mapper.readTree(json);
 
@@ -92,6 +98,11 @@ public class NotificationWorker extends Worker {
             if(titleList.size() > 0) {
                 String groupKey = "GROUP_KEY";
 
+                // 通知をタップしたときのイベントを設定
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Issue通知", NotificationManager.IMPORTANCE_DEFAULT);
                     NotificationManager notificationManager = getApplicationContext().getSystemService(NotificationManager.class);
@@ -111,6 +122,8 @@ public class NotificationWorker extends Worker {
                                 .setContentTitle("新しいissueが登録されました")
                                 .setContentText(titleList.get(i))
                                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                .setContentIntent(pendingIntent)
+                                .setAutoCancel(true)
                                 .setGroup(groupKey);
                     }
                 }
