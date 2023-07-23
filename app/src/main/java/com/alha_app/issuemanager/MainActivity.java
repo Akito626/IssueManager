@@ -17,6 +17,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.alha_app.issuemanager.model.IssueData;
+import com.alha_app.issuemanager.model.NotificationWorker;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -230,6 +231,9 @@ public class MainActivity extends AppCompatActivity {
                 // issueNumberを取得
                 tmp = jsonResult.get(i).get("number").toString();
                 issueData.setNumber(tmp);
+                if(NotificationWorker.preData != null) {
+                    NotificationWorker.preData.add(tmp);
+                }
 
                 // commentのurl
                 tmp = jsonResult.get(i).get("comments_url").toString();

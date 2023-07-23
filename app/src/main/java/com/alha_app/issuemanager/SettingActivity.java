@@ -86,7 +86,6 @@ public class SettingActivity extends AppCompatActivity {
         String repo = issueManager.getRepo();
 
         Data data = new Data.Builder()
-                .putAll(issueMap)
                 .putString("token", token)
                 .putString("owner", owner)
                 .putString("repo", repo)
@@ -112,6 +111,7 @@ public class SettingActivity extends AppCompatActivity {
     private void stopWork() {
         WorkManager manager = WorkManager.getInstance(this);
         manager.cancelAllWork();
+        NotificationWorker.preData = null;
         Log.d("work", "Worker stopped");
     }
 }
