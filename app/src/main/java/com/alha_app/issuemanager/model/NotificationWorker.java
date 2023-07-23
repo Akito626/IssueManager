@@ -1,14 +1,17 @@
 package com.alha_app.issuemanager.model;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.work.Data;
@@ -34,13 +37,14 @@ import okhttp3.Response;
 public class NotificationWorker extends Worker {
     public static HashSet<String> preData;
     final public static String WORK_TAG = "NotificationWorkerTAG";
-    public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters params){
+
+    public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
     }
 
     @NonNull
     @Override
-    public Result doWork(){
+    public Result doWork() {
         String CHANNEL_ID = "ISSUE CHANNEL";
 
         Data data = getInputData();
@@ -64,13 +68,13 @@ public class NotificationWorker extends Worker {
             OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
             Response response = okHttpClient.newCall(request).execute();
 
-            if(!response.isSuccessful()) return Result.failure();
+            if (!response.isSuccessful()) return Result.failure();
 
             json = response.body().string();
             jsonResult = mapper.readTree(json);
 
             ArrayList<String> titleList = new ArrayList<>();
-            if(preData == null){
+            if (preData == null) {
                 preData = new HashSet<>();
                 for (int i = 0; i < jsonResult.size(); i++) {
                     // issueNumberを取得
@@ -95,7 +99,7 @@ public class NotificationWorker extends Worker {
                 }
             }
 
-            if(titleList.size() > 0) {
+            if (titleList.size() > 0) {
                 String groupKey = "GROUP_KEY";
 
                 // 通知をタップしたときのイベントを設定
@@ -111,7 +115,7 @@ public class NotificationWorker extends Worker {
 
                 NotificationCompat.Builder[] builders = new NotificationCompat.Builder[titleList.size() + 1];
                 for (int i = 0; i <= titleList.size(); i++) {
-                    if(i == titleList.size()){
+                    if (i == titleList.size()) {
                         builders[i] = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                                 .setSmallIcon(R.drawable.issue)
                                 .setGroup(groupKey)
@@ -128,7 +132,7 @@ public class NotificationWorker extends Worker {
                     }
                 }
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-                for(int i = 0; i <= titleList.size(); i++){
+                for (int i = 0; i <= titleList.size(); i++) {
                     notificationManager.notify(i, builders[i].build());
                 }
             }

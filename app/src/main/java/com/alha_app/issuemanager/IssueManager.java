@@ -17,9 +17,7 @@ public class IssueManager extends Application {
 
     private String issueNumber;
     private ArrayList<String> issueLabel = new ArrayList<>();
-    private String issuePriority;
     private String commentUrl;
-    private Map<String, Object> issueMap = new HashMap<>();
     private boolean isNotify;
 
     @Override
@@ -65,15 +63,8 @@ public class IssueManager extends Application {
     public ArrayList<String> getIssueLabel() {
         return issueLabel;
     }
-
-    public String getIssuePriority() {
-        return issuePriority;
-    }
     public String getCommentUrl() {
         return commentUrl;
-    }
-    public Map<String, Object> getIssueMap() {
-        return issueMap;
     }
     public boolean isNotify() {
         if(!isNotify) {
@@ -121,15 +112,8 @@ public class IssueManager extends Application {
     public void setIssueLabel(ArrayList<String> issueLabel) {
         this.issueLabel = issueLabel;
     }
-
-    public void setIssuePriority(String issuePriority) {
-        this.issuePriority = issuePriority;
-    }
     public void setCommentUrl(String commentUrl) {
         this.commentUrl = commentUrl;
-    }
-    public void setIssueMap(Map<String, Object> issueMap) {
-        this.issueMap = issueMap;
     }
     public void setNotify(boolean notify) {
         SharedPreferences preferences = getSharedPreferences("prefData", MODE_PRIVATE);
