@@ -249,12 +249,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            Map<String, Object> issueMap = new HashMap<>();
-            for (int i = 0; i < openIssueData.size(); i++){
-                issueMap.put(openIssueData.get(i).getNumber(), openIssueData.get(i).getTitle());
-            }
-            issueManager.setIssueMap(issueMap);
-
             // openとclosedをそれぞれのリストに表示
             if (s.equals("open")) {
                 handler.post(() -> {
